@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-AU"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Training">
+<meta name="theme-color" content="#22252d">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>Michael's Training Plan · Progressive Overload</title>
+<style>
+:root{--bg:#22252d;--card:#2c303a;--acc:#4ef0b4;--txt:#f2f3f5;--mut:#9aa0ab;--line:#383c47}
+*{box-sizing:border-box}body{margin:0;padding-top:max(16px,env(safe-area-inset-top));background:var(--bg);color:var(--txt);font-family:-apple-system,system-ui,Segoe UI,Roboto,sans-serif;padding:16px;max-width:640px;margin:auto}
+h1{font-size:22px;margin:4px 0}.sub{color:var(--mut);font-size:14px;margin-bottom:14px}
+.weeks{display:flex;gap:6px;overflow-x:auto;margin-bottom:8px}
+.weeks button{flex:1;min-width:46px;padding:10px 0;border:0;border-radius:10px;background:var(--card);color:var(--txt);font-weight:700;font-size:15px}
+.weeks button.on{background:var(--acc);color:#1b1d22}.weeks button.fin{outline:2px solid var(--acc)}
+.wkinfo{background:var(--card);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--mut);margin-bottom:12px}
+.wkinfo b{color:var(--txt)}
+details{background:var(--card);border-radius:14px;margin-bottom:12px;overflow:hidden}
+summary{list-style:none;padding:16px;font-weight:700;font-size:17px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+.prog{font-size:13px;font-weight:600;color:var(--mut)}.done .prog{color:var(--acc)}
+.ex{display:flex;gap:12px;padding:12px 16px;border-top:1px solid var(--line);align-items:flex-start}
+input[type=checkbox]{appearance:none;width:26px;height:26px;min-width:26px;border:2px solid var(--mut);border-radius:50%;margin-top:2px;display:grid;place-content:center;cursor:pointer}
+input:checked{background:var(--acc);border-color:var(--acc)}input:checked::after{content:"✓";color:#1b1d22;font-weight:900;font-size:15px}
+.body{flex:1}.n{font-weight:600}.d{font-size:15px;margin-top:3px}.d .up{color:var(--acc);font-weight:700;font-size:12px;margin-left:6px}
+.note{color:var(--mut);font-size:13px;margin-top:2px}
+.new{color:var(--acc);font-size:11px;font-weight:700;margin-left:6px;border:1px solid var(--acc);border-radius:6px;padding:0 4px}
+.ex.ticked .n{text-decoration:line-through;color:var(--mut)}
+.log{margin-top:6px;width:100%;background:#22252d;border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:7px 9px;font-size:14px}
+.tips{background:var(--card);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--mut);line-height:1.5;margin-top:4px}
+.tips b{color:var(--txt)}
+.btn{width:100%;margin:6px 0;padding:14px;border:0;border-radius:12px;background:#383c47;color:var(--txt);font-size:15px;font-weight:600}
+.btn.pri{background:var(--acc);color:#1b1d22}
+</style></head><body>
+<h1>Phase 3 · Chest &amp; Arms Focus</h1>
+<div class="sub" id="blk"></div>
+<div class="weeks" id="weeks"></div>
+<div class="wkinfo" id="wkinfo"></div>
+<div id="days"></div>
+<button class="btn pri" id="nextWeek"></button>
+<div class="tips"><b>How this works</b><br>
+Weeks 1–3 keep the weight and add reps. Week 4 bumps the weight and drops back to the bottom of the rep range, then week 5 builds the reps again. Week 6 is a lighter week with fewer sets so you recover and come back stronger. When you finish week 6, start the next block and every weight goes up one step.<br><br>
+<b>If a target is too hard:</b> stay on the same weight and reps next week instead of going up. If it felt easy (3+ reps left), jump ahead a week for that exercise. Write what you actually lifted in the box under each exercise.<br><br>
+<b>Knee:</b> keep everything pain-free. Drop weight before you drop form.</div>
+<button class="btn" id="reset">Reset everything</button>
+<script>
+const K="mj-po-v1";
+// [name, sets, repLow, repHigh, baseKg|null, incKg, note, isNew, type]  type: r=reps, t=time(secs/min)
+const plan=[
+["Day 1 · Upper Strength",[
+["Bench Press (Barbell)",3,6,8,80,2.5,""],
+["Barbell Row",3,8,10,70,2.5,""],
+["Incline Bench Press (Dumbbell)",2,8,10,25,2,""],
+["Lat Pulldown",2,10,12,null,5,"Pick a weight that leaves 2 reps in the tank",1],
+["Bicep Curl (Dumbbell)",2,8,10,18,2,"Superset with pushdown"],
+["Tricep Pushdown (Cable)",2,12,15,12,2.5,""]]],
+["Day 2 · Lower Body & Core Stability",[
+["Romanian Deadlift (Barbell)",3,8,10,100,2.5,""],
+["Leg Curl",3,10,12,70,5,""],
+["Goblet Squat",2,10,12,24,2,"3 s down, pain-free depth"],
+["Back Extension",2,12,15,null,0,"Hold a plate once 15 reps is easy"],
+["Pallof Press",2,10,12,null,0,"Each side",1],
+["Cardio (bike)",1,15,20,null,0,"Easy pace, minutes",0,"m"]]],
+["Day 3 · Upper Hypertrophy",[
+["Incline Bench Press (Barbell)",3,8,10,60,2.5,""],
+["Seated Cable Row",2,10,12,null,5,"Pick a weight that leaves 2 reps in the tank",1],
+["Seated Shoulder Press (Dumbbell)",2,8,10,22,2,""],
+["Chest Fly (Cable)",2,12,15,12,2.5,""],
+["Lateral Raise",2,12,20,null,1,"Light, strict form",1],
+["Bicep Curl (Cable)",2,10,12,10,2.5,"Superset with extension"],
+["Overhead Tricep Extension (Cable)",2,12,15,15,2.5,""]]],
+["Day 4 · Lower Body, Core & Arms",[
+["Leg Press",3,10,12,100,5,"Feet higher on the platform"],
+["Leg Extension",2,12,15,14,2.5,"Slow, pain-free"],
+["Glute Bridge / Hip Thrust",2,10,12,null,5,"",1],
+["Plank",2,45,60,null,0,"Seconds",0,"s"],
+["Hammer Curl (Dumbbell)",2,8,10,18,2,"Superset with pushdown"],
+["Rope Pushdown (Cable)",2,12,15,null,2.5,"",1]]]];
+const WEEKS=["Build reps","Build reps","Top of range","Weight up","Build reps","Lighter week"];
+function st(){try{return JSON.parse(localStorage.getItem(K))||{block:1,week:1,ticks:{},logs:{}}}catch(e){return{block:1,week:1,ticks:{},logs:{}}}}
+function save(s){localStorage.setItem(K,JSON.stringify(s))}
+const r1=x=>Math.round(x*2)/2;
+function target(e,week,block){
+ const [n,sets,lo,hi,base,inc,note,isNew,type]=e; const mid=Math.round((lo+hi)/2);
+ const steps=(block-1)+(week>=4?1:0); // weight steps
+ let reps,up=false,s=sets;
+ if(type){ // time based: climb from lo to hi
+   const v=[lo,lo+Math.round((hi-lo)/3),lo+Math.round(2*(hi-lo)/3),hi,hi,lo][week-1]+(week<6&&type=='s'?(block-1)*10:0);
+   if(week==6)s=Math.max(1,Math.ceil(sets/2));
+   const u=type=="s"?" s":" min"; return {txt:`${s} × ${v}${u}`,up:week>1&&week<6};
+ }
+ reps=[lo,mid,hi,lo,mid,lo][week-1];
+ if(week==6){s=Math.max(1,Math.ceil(sets/2));}
+ let w="";
+ if(base!=null){const kg=r1(base+inc*steps-(week==6?inc:0));w=` · ${kg} kg`;up=(week==4)||(block>1&&week==1);}
+ else if(inc>0){w=steps>0?` · your start weight +${r1(inc*steps-(week==6?inc:0))} kg`:" · your start weight";if(week==6&&steps==1)w=" · your start weight";up=week==4;}
+ else if(week<6&&block>1){reps=reps+(block-1)*2;}
+ return {txt:`${s} × ${reps} reps${w}`,up:up||(week>1&&week<4)||week==5};
+}
+function render(){
+ const s=st(),wk=s.week,b=s.block;
+ document.getElementById("blk").textContent=`Block ${b} · Tick each exercise as you finish it. Everything saves on this phone.`;
+ const W=document.getElementById("weeks");W.innerHTML="";
+ for(let i=1;i<=6;i++){const bt=document.createElement("button");bt.textContent="W"+i;if(i==wk)bt.className="on";
+  const all=plan.every((d,di)=>d[1].every((_,ei)=>s.ticks[`${b}-${i}-${di}-${ei}`]));if(all&&i!=wk)bt.className="fin";
+  bt.onclick=()=>{s.week=i;save(s);render()};W.appendChild(bt)}
+ document.getElementById("wkinfo").innerHTML=`<b>Week ${wk}: ${WEEKS[wk-1]}.</b> `+[
+ "Starting point. Hit the bottom of each rep range with clean form.",
+ "Same weights, add a rep or two to every set.",
+ "Same weights, push to the top of the rep range.",
+ "Weights go up one step and reps drop back down.",
+ "Heavier weights, build the reps back up.",
+ "Fewer sets and slightly lighter. Recover, don't push."][wk-1];
+ const c=document.getElementById("days");c.innerHTML="";const open=s.open||[0];
+ plan.forEach(([title,ex],di)=>{
+  const d=document.createElement("details");if(open.includes(di))d.open=true;
+  const key=ei=>`${b}-${wk}-${di}-${ei}`;
+  const done=ex.filter((_,ei)=>s.ticks[key(ei)]).length;if(done==ex.length)d.className="done";
+  d.innerHTML=`<summary><span>${done==ex.length?"✅ ":""}${title}</span><span class="prog">${done}/${ex.length}</span></summary>`+
+  ex.map((e,ei)=>{const t=target(e,wk,b);const k=key(ei);
+   return `<div class="ex ${s.ticks[k]?"ticked":""}"><input type="checkbox" data-k="${k}" ${s.ticks[k]?"checked":""}><div class="body"><div class="n">${e[0]}${e[7]?'<span class="new">NEW</span>':""}</div><div class="d">${t.txt}${t.up&&wk!=6?'<span class="up">▲</span>':""}</div>${e[6]?`<div class="note">${e[6]}</div>`:""}<input class="log" data-l="${k}" placeholder="What you actually did (e.g. 80kg 8,8,7)" value="${(s.logs[k]||"").replace(/"/g,"&quot;")}"></div></div>`}).join("");
+  d.addEventListener("toggle",()=>{const s2=st();s2.open=[...c.querySelectorAll("details")].map((x,i)=>x.open?i:-1).filter(i=>i>=0);save(s2)});
+  c.appendChild(d)});
+ c.querySelectorAll("input[type=checkbox]").forEach(x=>x.onchange=()=>{const s2=st();s2.ticks[x.dataset.k]=x.checked;save(s2);render()});
+ c.querySelectorAll("input.log").forEach(x=>x.onchange=()=>{const s2=st();s2.logs[x.dataset.l]=x.value;save(s2)});
+ const nb=document.getElementById("nextWeek");
+ nb.textContent=wk<6?`Continue to Week ${wk+1} →`:`Start Block ${b+1} (weights go up) →`;
+ nb.onclick=()=>{const s2=st();if(s2.week<6)s2.week++;else{s2.block++;s2.week=1}save(s2);window.scrollTo(0,0);render()};
+}
+document.getElementById("reset").onclick=()=>{if(confirm("Clear all ticks, logs and go back to Block 1, Week 1?")){localStorage.removeItem(K);render()}};
+render();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
+</script></body></html>
