@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-AU"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
- <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Training">
@@ -11,9 +11,14 @@
 <link rel="icon" href="icon-192.png">
 <title>Michael's Training Plan · Progressive Overload</title>
 <style>
-:root{--bg:#22252d;--card:#2c303a;--acc:#4ef0b4;--txt:#f2f3f5;--mut:#9aa0ab;--line:#383c47}
-*{box-sizing:border-box}body{margin:0;padding-top:max(16px,env(safe-area-inset-top));background:var(--bg);color:var(--txt);font-family:-apple-system,system-ui,Segoe UI,Roboto,sans-serif;padding:16px;max-width:640px;margin:auto}
-h1{font-size:22px;margin:4px 0}.sub{color:var(--mut);font-size:14px;margin-bottom:14px}
+:root{--bg:#22252d;--card:#2c303a;--acc:#4ef0b4;--txt:#f2f3f5;--mut:#9aa0ab;--line:#383c47;--org:#ffb454;--tab:68px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{margin:0 auto;background:var(--bg);color:var(--txt);font-family:-apple-system,system-ui,Segoe UI,Roboto,sans-serif;max-width:640px;
+ padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) calc(var(--tab) + env(safe-area-inset-bottom) + 20px) max(16px,env(safe-area-inset-left))}
+h1{font-size:22px;margin:4px 0}h2{font-size:18px;margin:18px 0 10px}.sub{color:var(--mut);font-size:14px;margin-bottom:14px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.mbtn{flex:none;display:inline-flex;align-items:center;gap:6px;background:#1db954;color:#0d1a12;font-weight:700;font-size:14px;text-decoration:none;padding:9px 12px;border-radius:20px;margin-top:2px}
 .weeks{display:flex;gap:6px;overflow-x:auto;margin-bottom:8px}
 .weeks button{flex:1;min-width:46px;padding:10px 0;border:0;border-radius:10px;background:var(--card);color:var(--txt);font-weight:700;font-size:15px}
 .weeks button.on{background:var(--acc);color:#1b1d22}.weeks button.fin{outline:2px solid var(--acc)}
@@ -23,20 +28,69 @@ details{background:var(--card);border-radius:14px;margin-bottom:12px;overflow:hi
 summary{list-style:none;padding:16px;font-weight:700;font-size:17px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
 summary::-webkit-details-marker{display:none}
 .prog{font-size:13px;font-weight:600;color:var(--mut)}.done .prog{color:var(--acc)}
-.ex{display:flex;gap:12px;padding:12px 16px;border-top:1px solid var(--line);align-items:flex-start}
-input[type=checkbox]{appearance:none;width:26px;height:26px;min-width:26px;border:2px solid var(--mut);border-radius:50%;margin-top:2px;display:grid;place-content:center;cursor:pointer}
-input:checked{background:var(--acc);border-color:var(--acc)}input:checked::after{content:"✓";color:#1b1d22;font-weight:900;font-size:15px}
-.body{flex:1}.n{font-weight:600}.d{font-size:15px;margin-top:3px}.d .up{color:var(--acc);font-weight:700;font-size:12px;margin-left:6px}
-.note{color:var(--mut);font-size:13px;margin-top:2px}
+.ex{display:flex;gap:12px;padding:14px 16px;border-top:1px solid var(--line);align-items:flex-start}
+input[type=checkbox]{appearance:none;-webkit-appearance:none;width:28px;height:28px;min-width:28px;border:2px solid var(--mut);border-radius:50%;margin:0;margin-top:1px;display:grid;place-content:center;cursor:pointer}
+input:checked{background:var(--acc);border-color:var(--acc)}input:checked::after{content:"✓";color:#1b1d22;font-weight:900;font-size:16px}
+.body{flex:1;min-width:0}.n{font-weight:600}.d{font-size:15px;margin-top:3px}.d .up{color:var(--acc);font-weight:700;font-size:12px;margin-left:6px}
+.note{color:var(--mut);font-size:13px;margin-top:2px}.last{color:var(--mut);font-size:12.5px;margin-top:4px}
 .new{color:var(--acc);font-size:11px;font-weight:700;margin-left:6px;border:1px solid var(--acc);border-radius:6px;padding:0 4px}
 .ex.ticked .n{text-decoration:line-through;color:var(--mut)}
-.log{margin-top:6px;width:100%;background:#22252d;border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:7px 9px;font-size:14px}
+.sets{margin-top:10px;display:grid;gap:6px}
+.srow{display:grid;grid-template-columns:44px 1fr 18px 1fr;gap:6px;align-items:center}
+.srow.one{grid-template-columns:44px 1fr 50px}
+.srow label{font-size:13px;color:var(--mut);font-weight:600}.srow .x{color:var(--mut);text-align:center;font-size:14px}
+.srow .u{color:var(--mut);font-size:13px}
+.num{width:100%;height:46px;background:#22252d;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:0 10px;font-size:17px;font-weight:600;text-align:center;-webkit-appearance:none}
+.num:focus,.log:focus,.lnk:focus{outline:none;border-color:var(--acc)}
+.num::placeholder{color:#6c7280;font-weight:500}
+.unitwrap{position:relative}.unitwrap span{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--mut);pointer-events:none}
+.log{margin-top:8px;width:100%;background:#22252d;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:10px;font-size:16px}
 .tips{background:var(--card);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--mut);line-height:1.5;margin-top:4px}
 .tips b{color:var(--txt)}
-.btn{width:100%;margin:6px 0;padding:14px;border:0;border-radius:12px;background:#383c47;color:var(--txt);font-size:15px;font-weight:600}
-.btn.pri{background:var(--acc);color:#1b1d22}
+.btn{display:block;text-align:center;text-decoration:none;width:100%;margin:6px 0;padding:14px;border:0;border-radius:12px;background:#383c47;color:var(--txt);font-size:15px;font-weight:600;font-family:inherit}
+.btn.pri{background:var(--acc);color:#1b1d22}.btn.spot{background:#1db954;color:#0d1a12;font-size:17px;padding:16px}
+.panel{display:none}.panel.on{display:block}
+/* tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(30,33,40,.96);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line);
+ display:flex;justify-content:center;padding:6px max(8px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+.tabbar .in{display:flex;width:100%;max-width:640px}
+.tabbar button{flex:1;background:none;border:0;color:var(--mut);font-size:11.5px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;min-height:52px;font-family:inherit}
+.tabbar button svg{width:26px;height:26px}.tabbar button.on{color:var(--acc)}
+/* progress */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--card);border-radius:14px;padding:14px}
+.card .k{font-size:12.5px;color:var(--mut);font-weight:600}.card .v{font-size:26px;font-weight:800;margin-top:4px}.card .s{font-size:12.5px;color:var(--mut);margin-top:2px}
+.card .s .pos{color:var(--acc);font-weight:700}.card .s .neg{color:#ff7b7b;font-weight:700}
+.bar{height:6px;background:#22252d;border-radius:4px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
+.empty{background:var(--card);border-radius:14px;padding:22px 18px;text-align:center;color:var(--mut);font-size:14.5px;line-height:1.5;margin-top:12px}
+.empty .big{font-size:40px}.empty b{color:var(--txt);font-size:16px}
+.pbs{background:var(--card);border-radius:14px;overflow:hidden}
+.pb{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border-top:1px solid var(--line);font-size:14px}
+.pb:first-child{border-top:0}.pb .nm{font-weight:600}.pb .meta{color:var(--mut);font-size:12px;margin-top:2px}.pb .r{text-align:right;white-space:nowrap}.pb .r b{color:var(--acc)}
+select{width:100%;height:48px;background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:12px;font-size:16px;padding:0 12px;font-family:inherit;-webkit-appearance:none;appearance:none;
+ background-image:linear-gradient(45deg,transparent 50%,var(--mut) 50%),linear-gradient(135deg,var(--mut) 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 14px) 21px;background-size:6px 6px;background-repeat:no-repeat}
+.chart{background:var(--card);border-radius:14px;padding:12px 8px 8px;margin-top:10px}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mut);padding:6px 8px 2px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.ov{background:var(--card);border-radius:14px;overflow:hidden;margin-top:10px}
+.ov .row{display:grid;grid-template-columns:64px 1fr;gap:8px;padding:11px 14px;border-top:1px solid var(--line);font-size:14px;align-items:center}
+.ov .row:first-child{border-top:0}.ov .row.cur{background:rgba(78,240,180,.08)}.ov .wk{font-weight:700}.ov .lab{color:var(--mut);font-size:12px}
+.ov .tri{color:var(--acc);font-weight:800;font-size:12px;margin-left:4px}.ov .act{color:var(--mut);font-size:12.5px;margin-top:3px}
+/* music */
+.lnk{width:100%;height:48px;background:#22252d;border:1px solid var(--line);border-radius:12px;color:var(--txt);padding:0 12px;font-size:16px}
+.info{font-size:13px;color:var(--mut);line-height:1.5;margin:8px 2px}
+.err{color:#ff7b7b;font-size:13px;margin:4px 2px;min-height:1em}
+.ok{color:var(--acc)}
+#embedWrap{border-radius:14px;overflow:hidden;background:#181a20;min-height:352px}
+#embedWrap iframe{display:block;border:0;width:100%;height:352px}
+.offl{padding:40px 16px;text-align:center;color:var(--mut);font-size:14px}
 </style></head><body>
-<h1>Phase 3 · Chest &amp; Arms Focus</h1>
+
+<!-- WORKOUTS -->
+<section class="panel" id="p-workouts">
+<div class="hdr"><div><h1>Phase 3 · Chest &amp; Arms Focus</h1></div>
+<a class="mbtn" id="quickMusic" href="#" target="_blank" rel="noopener" aria-label="Open Spotify"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.6 14.4a.6.6 0 01-.9.2c-2.4-1.5-5.4-1.8-9-1a.6.6 0 11-.3-1.2c3.9-.9 7.2-.5 9.9 1.1.3.2.4.6.3.9zm1.2-2.7a.8.8 0 01-1.1.3c-2.7-1.7-6.9-2.2-10.2-1.2a.8.8 0 11-.4-1.5c3.7-1.1 8.4-.6 11.5 1.4.3.2.4.7.2 1zm.1-2.8C14.7 9 9.3 8.8 6.2 9.7a.9.9 0 11-.5-1.8c3.6-1.1 9.5-.9 13.2 1.3a.9.9 0 01-1 1.7z"/></svg>Music</a></div>
 <div class="sub" id="blk"></div>
 <div class="weeks" id="weeks"></div>
 <div class="wkinfo" id="wkinfo"></div>
@@ -44,12 +98,49 @@ input:checked{background:var(--acc);border-color:var(--acc)}input:checked::after
 <button class="btn pri" id="nextWeek"></button>
 <div class="tips"><b>How this works</b><br>
 Weeks 1–3 keep the weight and add reps. Week 4 bumps the weight and drops back to the bottom of the rep range, then week 5 builds the reps again. Week 6 is a lighter week with fewer sets so you recover and come back stronger. When you finish week 6, start the next block and every weight goes up one step.<br><br>
-<b>If a target is too hard:</b> stay on the same weight and reps next week instead of going up. If it felt easy (3+ reps left), jump ahead a week for that exercise. Write what you actually lifted in the box under each exercise.<br><br>
+<b>Logging:</b> type the kg and reps for each set. The grey numbers are today's target, so leave a box empty only if you skipped that set. An exercise ticks itself once every set has reps. Use the notes box for anything else.<br><br>
+<b>If a target is too hard:</b> stay on the same weight and reps next week instead of going up. If it felt easy (3+ reps left), jump ahead a week for that exercise.<br><br>
 <b>Knee:</b> keep everything pain-free. Drop weight before you drop form.</div>
 <button class="btn" id="reset">Reset everything</button>
+</section>
+
+<!-- PROGRESS -->
+<section class="panel" id="p-progress">
+<h1>Progress</h1><div class="sub" id="psub"></div>
+<div class="cards" id="cards"></div>
+<div id="pempty"></div>
+<h2>Exercise chart</h2>
+<select id="exSel" aria-label="Pick exercise"></select>
+<div class="chart"><div id="chartBox"></div><div class="legend" id="legend"></div></div>
+<h2 id="ovTitle">Block overview</h2>
+<div class="ov" id="ov"></div>
+<h2>Personal bests</h2>
+<div id="pbs"></div>
+</section>
+
+<!-- MUSIC -->
+<section class="panel" id="p-music">
+<h1>Music</h1><div class="sub" id="msub">Your workout soundtrack</div>
+<div id="embedWrap"></div>
+<a class="btn spot" id="openSpot" href="#" target="_blank" rel="noopener">Open in Spotify</a>
+<div class="info">The player above plays 30-second previews unless you're logged into Spotify in Safari. <b style="color:var(--txt)">Open in Spotify</b> always works and opens the Spotify app.</div>
+<h2>Change playlist</h2>
+<input class="lnk" id="lnk" type="url" inputmode="url" autocomplete="off" autocapitalize="off" placeholder="Paste a Spotify playlist or album link">
+<div class="err" id="lnkErr"></div>
+<button class="btn pri" id="lnkSave">Use this playlist</button>
+<button class="btn" id="lnkDef">Back to Beast Mode</button>
+<div class="info">In Spotify, tap ••• on a playlist or album, then Share → Copy link, and paste it here.</div>
+</section>
+
+<nav class="tabbar"><div class="in">
+<button data-tab="workouts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Workouts</button>
+<button data-tab="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 16l4-5 4 3 6-8"/><circle cx="19" cy="6" r="1.2" fill="currentColor"/></svg>Progress</button>
+<button data-tab="music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Music</button>
+</div></nav>
+
 <script>
 const K="mj-po-v1";
-// [name, sets, repLow, repHigh, baseKg|null, incKg, note, isNew, type]  type: r=reps, t=time(secs/min)
+// [name, sets, repLow, repHigh, baseKg|null, incKg, note, isNew, type]  type: m=minutes, s=seconds
 const plan=[
 ["Day 1 · Upper Strength",[
 ["Bench Press (Barbell)",3,6,8,80,2.5,""],
@@ -81,10 +172,30 @@ const plan=[
 ["Hammer Curl (Dumbbell)",2,8,10,18,2,"Superset with pushdown"],
 ["Rope Pushdown (Cable)",2,12,15,null,2.5,"",1]]]];
 const WEEKS=["Build reps","Build reps","Top of range","Weight up","Build reps","Lighter week"];
-function st(){try{return JSON.parse(localStorage.getItem(K))||{block:1,week:1,ticks:{},logs:{}}}catch(e){return{block:1,week:1,ticks:{},logs:{}}}}
+const DEF_MUSIC={type:"playlist",id:"37i9dQZF1DX76Wlfdnj7AP",name:"Beast Mode"};
+// flat exercise list
+const EX=[];plan.forEach((d,di)=>d[1].forEach((e,ei)=>EX.push({di,ei,e,name:e[0],kind:e[8]?e[8]:(e[4]!=null||e[5]>0?"w":"b")})));
+const exAt=(di,ei)=>EX.find(x=>x.di==di&&x.ei==ei);
+
+function migrate(s){
+ if(!s||typeof s!="object")s={};
+ s.block=+s.block||1;s.week=+s.week||1;s.ticks=s.ticks||{};s.logs=s.logs||{};
+ s.sets=s.sets||{};s.dates=s.dates||{};if(!s.music)s.music=null;if(!s.tab)s.tab="workouts";
+ if(!s.v||s.v<2){ // v1 -> v2: keep free-text logs as notes, try to read simple "80kg 8,8,7" logs into sets
+  for(const k in s.logs){const t=(s.logs[k]||"").trim();if(!t||s.sets[k])continue;
+   const m=t.match(/^(\d+(?:\.\d+)?)\s*kg\s*[x×@:\-]?\s*(\d+(?:\s*[,\/ ]\s*\d+)*)$/i);
+   if(m){const kg=+m[1];s.sets[k]=m[2].split(/[,\/ ]+/).filter(Boolean).map(r=>[kg,+r]);}}
+  s.v=2;}
+ return s;}
+function st(){let s;try{s=JSON.parse(localStorage.getItem(K))}catch(e){s=null}return migrate(s)}
 function save(s){localStorage.setItem(K,JSON.stringify(s))}
 const r1=x=>Math.round(x*2)/2;
-function target(e,week,block){
+const esc=x=>String(x==null?"":x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=x=>(Math.round(x*10)/10).toString();
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const niceDate=d=>{if(!d)return"";const [y,m,dd]=d.split("-");return `${+dd} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1]}`};
+
+function target(e,week,block){ // text target (unchanged logic)
  const [n,sets,lo,hi,base,inc,note,isNew,type]=e; const mid=Math.round((lo+hi)/2);
  const steps=(block-1)+(week>=4?1:0); // weight steps
  let reps,up=false,s=sets;
@@ -101,13 +212,50 @@ function target(e,week,block){
  else if(week<6&&block>1){reps=reps+(block-1)*2;}
  return {txt:`${s} × ${reps} reps${w}`,up:up||(week>1&&week<4)||week==5};
 }
+// numeric version of the same target: {sets, reps (or secs/mins), kg (absolute or null), off (kg above start weight for user-picked weights)}
+function tnum(e,week,block){
+ const [n,sets,lo,hi,base,inc,note,isNew,type]=e;const mid=Math.round((lo+hi)/2);const steps=(block-1)+(week>=4?1:0);
+ const s=week==6?Math.max(1,Math.ceil(sets/2)):sets;
+ if(type){const v=[lo,lo+Math.round((hi-lo)/3),lo+Math.round(2*(hi-lo)/3),hi,hi,lo][week-1]+(week<6&&type=='s'?(block-1)*10:0);return{sets:s,reps:v,kg:null,off:null}}
+ let reps=[lo,mid,hi,lo,mid,lo][week-1];
+ if(base!=null)return{sets:s,reps,kg:r1(base+inc*steps-(week==6?inc:0)),off:null};
+ if(inc>0)return{sets:s,reps,kg:null,off:r1(inc*steps-(week==6?inc:0))};
+ if(week<6&&block>1)reps+=(block-1)*2;
+ return{sets:s,reps,kg:null,off:null};
+}
+const kparse=k=>{const [b,w,di,ei]=k.split("-").map(Number);return{b,w,di,ei,idx:(b-1)*6+(w-1)}};
+const kidx=(b,w)=>(b-1)*6+(w-1);
+// cleaned logged sets for a key
+function setsOf(s,k){return (s.sets[k]||[]).map(a=>[a[0]===""||a[0]==null?null:+a[0],a[1]===""||a[1]==null?null:+a[1]]).filter(a=>a[1]!=null&&!isNaN(a[1])&&a[1]>0)}
+// all logged entries for an exercise, sorted
+function history(s,x){const out=[];for(const k in s.sets){const p=kparse(k);if(p.di!=x.di||p.ei!=x.ei)continue;const ss=setsOf(s,k);if(!ss.length)continue;
+ let best=null,e1=0,maxR=0;ss.forEach(([kg,r])=>{maxR=Math.max(maxR,r);if(kg!=null&&kg>0){if(!best||kg>best[0]||(kg==best[0]&&r>best[1]))best=[kg,r];e1=Math.max(e1,kg*(1+r/30))}});
+ out.push({k,...p,sets:ss,best,e1,maxR,date:s.dates[k]})}
+ return out.sort((a,b)=>a.idx-b.idx)}
+// start weight for exercises where you pick the weight: first logged kg minus that week's planned offset
+function startKg(s,x){if(x.e[4]!=null)return x.e[4];const h=history(s,x).filter(h=>h.best);if(!h.length)return null;const f=h[0];return f.best[0]-tnum(x.e,f.w,f.b).off}
+function plannedKg(s,x,w,b){const t=tnum(x.e,w,b);if(t.kg!=null)return t.kg;if(t.off!=null){const sk=startKg(s,x);return sk==null?null:r1(sk+t.off)}return null}
+
+/* ---------- WORKOUTS ---------- */
+function setInputs(s,x,k,wk,b){
+ const t=tnum(x.e,wk,b),cur=s.sets[k]||[],n=Math.max(t.sets,cur.length);let h='<div class="sets">';
+ const pk=plannedKg(s,x,wk,b);
+ for(let i=0;i<n;i++){const v=cur[i]||[];
+  if(x.kind=="w")h+=`<div class="srow"><label>Set ${i+1}</label><div class="unitwrap"><input class="num" inputmode="decimal" data-k="${k}" data-i="${i}" data-f="0" placeholder="${pk!=null?pk:"kg"}" value="${v[0]??""}" aria-label="Set ${i+1} kg"><span>kg</span></div><span class="x">×</span><div class="unitwrap"><input class="num" inputmode="numeric" pattern="[0-9]*" data-k="${k}" data-i="${i}" data-f="1" placeholder="${t.reps}" value="${v[1]??""}" aria-label="Set ${i+1} reps"><span>reps</span></div></div>`;
+  else{const u=x.kind=="s"?"sec":x.kind=="m"?"min":"reps";
+   h+=`<div class="srow one"><label>Set ${i+1}</label><input class="num" inputmode="decimal" data-k="${k}" data-i="${i}" data-f="1" placeholder="${t.reps}" value="${v[1]??""}" aria-label="Set ${i+1} ${u}"><span class="u">${u}</span></div>`}}
+ return h+'</div>'}
+function lastTime(s,x,b,wk){const h=history(s,x).filter(h=>h.idx<kidx(b,wk));if(!h.length)return"";const l=h[h.length-1];
+ const u=x.kind=="s"?" s":x.kind=="m"?" min":"";
+ const txt=x.kind=="w"&&l.sets.every(a=>a[0]!=null)&&new Set(l.sets.map(a=>a[0])).size==1?`${fmt(l.sets[0][0])} kg × ${l.sets.map(a=>a[1]).join(", ")}`:l.sets.map(a=>(a[0]!=null?fmt(a[0])+"×":"")+a[1]+u).join(", ");
+ return `<div class="last">Last time (B${l.b} W${l.w}): ${txt}</div>`}
 function render(){
  const s=st(),wk=s.week,b=s.block;
  document.getElementById("blk").textContent=`Block ${b} · Tick each exercise as you finish it. Everything saves on this phone.`;
  const W=document.getElementById("weeks");W.innerHTML="";
  for(let i=1;i<=6;i++){const bt=document.createElement("button");bt.textContent="W"+i;if(i==wk)bt.className="on";
   const all=plan.every((d,di)=>d[1].every((_,ei)=>s.ticks[`${b}-${i}-${di}-${ei}`]));if(all&&i!=wk)bt.className="fin";
-  bt.onclick=()=>{s.week=i;save(s);render()};W.appendChild(bt)}
+  bt.onclick=()=>{const s2=st();s2.week=i;save(s2);render()};W.appendChild(bt)}
  document.getElementById("wkinfo").innerHTML=`<b>Week ${wk}: ${WEEKS[wk-1]}.</b> `+[
  "Starting point. Hit the bottom of each rep range with clean form.",
  "Same weights, add a rep or two to every set.",
@@ -117,21 +265,159 @@ function render(){
  "Fewer sets and slightly lighter. Recover, don't push."][wk-1];
  const c=document.getElementById("days");c.innerHTML="";const open=s.open||[0];
  plan.forEach(([title,ex],di)=>{
-  const d=document.createElement("details");if(open.includes(di))d.open=true;
+  const d=document.createElement("details");if(open.includes(di))d.open=true;d.dataset.di=di;
   const key=ei=>`${b}-${wk}-${di}-${ei}`;
   const done=ex.filter((_,ei)=>s.ticks[key(ei)]).length;if(done==ex.length)d.className="done";
-  d.innerHTML=`<summary><span>${done==ex.length?"✅ ":""}${title}</span><span class="prog">${done}/${ex.length}</span></summary>`+
-  ex.map((e,ei)=>{const t=target(e,wk,b);const k=key(ei);
-   return `<div class="ex ${s.ticks[k]?"ticked":""}"><input type="checkbox" data-k="${k}" ${s.ticks[k]?"checked":""}><div class="body"><div class="n">${e[0]}${e[7]?'<span class="new">NEW</span>':""}</div><div class="d">${t.txt}${t.up&&wk!=6?'<span class="up">▲</span>':""}</div>${e[6]?`<div class="note">${e[6]}</div>`:""}<input class="log" data-l="${k}" placeholder="What you actually did (e.g. 80kg 8,8,7)" value="${(s.logs[k]||"").replace(/"/g,"&quot;")}"></div></div>`}).join("");
+  d.innerHTML=`<summary><span class="ttl">${done==ex.length?"✅ ":""}${esc(title)}</span><span class="prog">${done}/${ex.length}</span></summary>`+
+  ex.map((e,ei)=>{const t=target(e,wk,b);const k=key(ei);const x=exAt(di,ei);
+   return `<div class="ex ${s.ticks[k]?"ticked":""}" data-row="${k}"><input type="checkbox" data-k="${k}" ${s.ticks[k]?"checked":""} aria-label="Done"><div class="body"><div class="n">${esc(e[0])}${e[7]?'<span class="new">NEW</span>':""}</div><div class="d">${t.txt}${t.up&&wk!=6?'<span class="up">▲</span>':""}</div>${e[6]?`<div class="note">${esc(e[6])}</div>`:""}${lastTime(s,x,b,wk)}${setInputs(s,x,k,wk,b)}<input class="log" data-l="${k}" placeholder="Notes (optional)" value="${esc(s.logs[k]||"")}"></div></div>`}).join("");
   d.addEventListener("toggle",()=>{const s2=st();s2.open=[...c.querySelectorAll("details")].map((x,i)=>x.open?i:-1).filter(i=>i>=0);save(s2)});
   c.appendChild(d)});
- c.querySelectorAll("input[type=checkbox]").forEach(x=>x.onchange=()=>{const s2=st();s2.ticks[x.dataset.k]=x.checked;save(s2);render()});
+ c.querySelectorAll("input[type=checkbox]").forEach(x=>x.onchange=()=>{const s2=st();s2.ticks[x.dataset.k]=x.checked;save(s2);refreshRow(x.dataset.k)});
  c.querySelectorAll("input.log").forEach(x=>x.onchange=()=>{const s2=st();s2.logs[x.dataset.l]=x.value;save(s2)});
+ c.querySelectorAll("input.num").forEach(x=>{x.onchange=()=>saveSet(x);x.onkeydown=ev=>{if(ev.key=="Enter"){ev.preventDefault();const all=[...c.querySelectorAll("input.num")];const n=all[all.indexOf(x)+1];if(n)n.focus();else x.blur()}}});
  const nb=document.getElementById("nextWeek");
  nb.textContent=wk<6?`Continue to Week ${wk+1} →`:`Start Block ${b+1} (weights go up) →`;
  nb.onclick=()=>{const s2=st();if(s2.week<6)s2.week++;else{s2.block++;s2.week=1}save(s2);window.scrollTo(0,0);render()};
+ setMusicLinks(s);
 }
-document.getElementById("reset").onclick=()=>{if(confirm("Clear all ticks, logs and go back to Block 1, Week 1?")){localStorage.removeItem(K);render()}};
-render();
+function saveSet(inp){
+ const s=st(),k=inp.dataset.k,i=+inp.dataset.i,f=+inp.dataset.f;const v=inp.value.trim().replace(",",".");
+ const arr=s.sets[k]||[];while(arr.length<=i)arr.push([null,null]);
+ arr[i][f]=v===""||isNaN(+v)?null:+v;
+ // trim empty trailing sets
+ while(arr.length&&arr[arr.length-1][0]==null&&arr[arr.length-1][1]==null)arr.pop();
+ if(arr.length)s.sets[k]=arr;else delete s.sets[k];
+ if(arr.some(a=>a[1]!=null)){if(!s.dates[k])s.dates[k]=today()}else delete s.dates[k];
+ // auto-tick when every planned set has reps
+ const p=kparse(k),x=exAt(p.di,p.ei),t=tnum(x.e,p.w,p.b);
+ if(arr.filter(a=>a[1]!=null).length>=t.sets)s.ticks[k]=true;
+ save(s);refreshRow(k);
+}
+function refreshRow(k){ // update tick + day summary without re-rendering (keeps keyboard focus)
+ const s=st(),row=document.querySelector(`[data-row="${k}"]`);if(!row)return;
+ row.classList.toggle("ticked",!!s.ticks[k]);row.querySelector("input[type=checkbox]").checked=!!s.ticks[k];
+ const p=kparse(k),d=row.closest("details"),ex=plan[p.di][1];
+ const done=ex.filter((_,ei)=>s.ticks[`${p.b}-${p.w}-${p.di}-${ei}`]).length;
+ d.classList.toggle("done",done==ex.length);d.querySelector(".prog").textContent=`${done}/${ex.length}`;
+ d.querySelector(".ttl").textContent=(done==ex.length?"✅ ":"")+plan[p.di][0];
+ const W=document.getElementById("weeks").children;
+ for(let i=1;i<=6;i++){const all=plan.every((dd,di)=>dd[1].every((_,ei)=>s.ticks[`${s.block}-${i}-${di}-${ei}`]));W[i-1].className=i==s.week?"on":all?"fin":""}
+}
+document.getElementById("reset").onclick=()=>{if(confirm("Clear all ticks, logs and go back to Block 1, Week 1?")){const m=st().music;localStorage.removeItem(K);if(m){const s=st();s.music=m;save(s)}render()}};
+
+/* ---------- PROGRESS ---------- */
+function stats(s){
+ const keys=new Set([...Object.keys(s.ticks).filter(k=>s.ticks[k]),...Object.keys(s.sets)]);
+ let maxB=s.block;keys.forEach(k=>maxB=Math.max(maxB,kparse(k).b));
+ let workouts=0;const active={};
+ for(let b=1;b<=maxB;b++)for(let w=1;w<=6;w++){plan.forEach((d,di)=>{const ks=d[1].map((_,ei)=>`${b}-${w}-${di}-${ei}`);
+  if(ks.every(k=>s.ticks[k]))workouts++;if(ks.some(k=>s.ticks[k]||setsOf(s,k).length))active[kidx(b,w)]=1})}
+ const cur=kidx(s.block,s.week);let i=active[cur]?cur:cur-1,streak=0;while(i>=0&&active[i]){streak++;i--}
+ const vol=(b,w)=>{let v=0;plan.forEach((d,di)=>d[1].forEach((_,ei)=>setsOf(s,`${b}-${w}-${di}-${ei}`).forEach(([kg,r])=>{if(kg)v+=kg*r})));return v};
+ const thisV=vol(s.block,s.week);let pb=s.block,pw=s.week-1;if(pw<1){pb--;pw=6}const lastV=pb>=1?vol(pb,pw):0;
+ let tot=0,dn=0;plan.forEach((d,di)=>d[1].forEach((_,ei)=>{tot++;if(s.ticks[`${s.block}-${s.week}-${di}-${ei}`])dn++}));
+ const anyLog=Object.keys(s.sets).some(k=>setsOf(s,k).length);
+ return{workouts,streak,thisV,lastV,pct:Math.round(dn/tot*100),dn,tot,anyLog,maxB}}
+function renderProgress(){
+ const s=st(),S=stats(s);
+ document.getElementById("psub").textContent=`Block ${s.block} · Week ${s.week} (${WEEKS[s.week-1]})`;
+ const diff=S.thisV-S.lastV,dp=S.lastV?Math.round(diff/S.lastV*100):null;
+ document.getElementById("cards").innerHTML=
+ `<div class="card"><div class="k">Workouts done</div><div class="v">${S.workouts}</div><div class="s">all exercises ticked</div></div>`+
+ `<div class="card"><div class="k">Weekly streak</div><div class="v">${S.streak} 🔥</div><div class="s">${S.streak==1?"week":"weeks"} in a row</div></div>`+
+ `<div class="card"><div class="k">Volume this week</div><div class="v">${Math.round(S.thisV).toLocaleString("en-AU")}<span style="font-size:14px;color:var(--mut)"> kg</span></div><div class="s">last week ${Math.round(S.lastV).toLocaleString("en-AU")} kg${dp!=null?`<br><span class="${diff>=0?"pos":"neg"}">${diff>=0?"▲":"▼"} ${Math.abs(dp)}%</span>`:""}</div></div>`+
+ `<div class="card"><div class="k">Week ${s.week} complete</div><div class="v">${S.pct}%</div><div class="s">${S.dn} of ${S.tot} exercises</div><div class="bar"><i style="width:${S.pct}%"></i></div></div>`;
+ document.getElementById("pempty").innerHTML=S.anyLog?"":`<div class="empty"><div class="big">📈</div><b>No lifts logged yet</b><br>Type your kg and reps under each exercise on the Workouts tab. Your charts and personal bests will build up here every week.<button class="btn pri" style="margin-top:14px" onclick="showTab('workouts')">Go to Workouts</button></div>`;
+ // dropdown
+ const sel=document.getElementById("exSel");
+ if(!sel.options.length){let h="";plan.forEach((d,di)=>{h+=`<optgroup label="${esc(d[0])}">`+d[1].map((e,ei)=>`<option value="${di}-${ei}">${esc(e[0])}</option>`).join("")+"</optgroup>"});sel.innerHTML=h;
+  sel.onchange=()=>{const s2=st();s2.pex=sel.value;save(s2);renderProgress()}}
+ let pex=s.pex;if(!pex){const f=EX.find(x=>history(s,x).length);pex=f?`${f.di}-${f.ei}`:"0-0"}sel.value=pex;
+ const [di,ei]=pex.split("-").map(Number),x=exAt(di,ei);
+ drawChart(s,x);renderOverview(s,x);renderPBs(s);
+}
+function drawChart(s,x){
+ const h=history(s,x),lastIdx=Math.max(kidx(s.block,6),...h.map(a=>a.idx));const N=lastIdx+1;
+ const isW=x.kind=="w",unit=isW?"kg":x.kind=="s"?"s":x.kind=="m"?"min":"reps";
+ const plan_=[],act=[],e1=[];
+ for(let i=0;i<N;i++){const b=Math.floor(i/6)+1,w=i%6+1;plan_.push(isW?plannedKg(s,x,w,b):tnum(x.e,w,b).reps)}
+ h.forEach(a=>{if(isW){if(a.best){act.push([a.idx,a.best[0]]);e1.push([a.idx,Math.round(a.e1*10)/10])}}else act.push([a.idx,a.maxR])});
+ const vals=[...plan_.filter(v=>v!=null),...act.map(a=>a[1]),...e1.map(a=>a[1])];
+ const box=document.getElementById("chartBox"),lg=document.getElementById("legend");
+ if(!vals.length){box.innerHTML=`<div class="offl">Log a set of ${esc(x.name)} to start this chart.<br>You pick the weight for this one, so the plan line appears after your first log.</div>`;lg.innerHTML="";return}
+ let mn=Math.min(...vals),mx=Math.max(...vals);if(mn==mx){mn-=5;mx+=5}const pad=(mx-mn)*.12;mn=Math.max(0,mn-pad);mx+=pad;
+ const Wd=360,Ht=210,L=36,R=10,T=12,B=34,cw=Wd-L-R,ch=Ht-T-B;
+ const X=i=>L+(N==1?cw/2:i*cw/(N-1)),Y=v=>T+ch-(v-mn)/(mx-mn)*ch;
+ let g=`<svg viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="${esc(x.name)} chart" font-family="-apple-system,system-ui,sans-serif">`;
+ for(let j=0;j<=4;j++){const v=mn+(mx-mn)*j/4,y=Y(v);g+=`<line x1="${L}" x2="${Wd-R}" y1="${y}" y2="${y}" stroke="#383c47" stroke-width="1"/><text x="${L-5}" y="${y+3.5}" font-size="10" fill="#9aa0ab" text-anchor="end">${Math.round(v)}</text>`}
+ const step=N>18?3:N>12?2:1;
+ for(let i=0;i<N;i++){const b=Math.floor(i/6)+1,w=i%6+1;
+  if(w==1&&i>0)g+=`<line x1="${(X(i)+X(i-1))/2}" x2="${(X(i)+X(i-1))/2}" y1="${T}" y2="${T+ch}" stroke="#4a4f5c" stroke-dasharray="2 3"/>`;
+  if(i%step==0||w==1)g+=`<text x="${X(i)}" y="${T+ch+14}" font-size="10" fill="${i==kidx(s.block,s.week)?"#4ef0b4":"#9aa0ab"}" text-anchor="middle">W${w}</text>`;
+  if(w==1)g+=`<text x="${X(i)}" y="${T+ch+27}" font-size="9.5" fill="#6c7280" text-anchor="${i==0?"start":"middle"}">Block ${b}</text>`}
+ const cx=X(kidx(s.block,s.week));g+=`<rect x="${cx-7}" y="${T}" width="14" height="${ch}" fill="#4ef0b4" opacity=".07" rx="3"/>`;
+ // planned: step line
+ let pp="",started=false;plan_.forEach((v,i)=>{if(v==null){started=false;return}const y=Y(v);if(!started){pp+=`M${X(i)} ${y}`;started=true}else pp+=`H${X(i)}V${y}`});
+ if(pp)g+=`<path d="${pp}" fill="none" stroke="#c9ccd3" stroke-width="2" stroke-dasharray="5 4" opacity=".8"/>`;
+ const line=(pts,col)=>{if(!pts.length)return"";let d=pts.map((p,j)=>(j?"L":"M")+X(p[0])+" "+Y(p[1])).join("");return `<path d="${d}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>`+pts.map(p=>`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3.6" fill="${col}" stroke="#2c303a" stroke-width="1.5"/>`).join("")};
+ g+=line(e1,"#ffb454")+line(act,"#4ef0b4");
+ const la=act[act.length-1];if(la)g+=`<text x="${Math.min(X(la[0]),Wd-R-14)}" y="${Y(la[1])-8}" font-size="10.5" font-weight="700" fill="#4ef0b4" text-anchor="middle">${fmt(la[1])}</text>`;
+ box.innerHTML=g+"</svg>";
+ lg.innerHTML=`<span><i style="background:#c9ccd3"></i>Planned ${isW?"weight":unit}</span><span><i style="background:#4ef0b4"></i>${isW?"Best set (kg)":"Your best ("+unit+")"}</span>`+(isW?`<span><i style="background:#ffb454"></i>Est. 1RM</span>`:"");
+}
+function renderOverview(s,x){
+ const b=s.block,isW=x.kind=="w",u=x.kind=="s"?" s":x.kind=="m"?" min":" reps";
+ document.getElementById("ovTitle").textContent=`Block ${b} overview · ${x.name}`;
+ let h="",prev=null;
+ if(b>1){const pt=tnum(x.e,6,b-1);prev={kg:isW?plannedKg(s,x,6,b-1):null,reps:pt.reps}}
+ for(let w=1;w<=6;w++){const t=tnum(x.e,w,b),kg=isW?plannedKg(s,x,w,b):null;
+  let tri="";
+  if(w<6&&prev){if(kg!=null&&prev.kg!=null&&kg>prev.kg)tri=`<span class="tri">▲ ${fmt(kg-prev.kg)} kg</span>`;else if(t.reps>prev.reps)tri=`<span class="tri">▲ reps</span>`;}
+  const kgTxt=isW?(kg!=null?` @ ${fmt(kg)} kg`:t.off?` @ start +${fmt(t.off)} kg`:" @ your start weight"):"";
+  const k=`${b}-${w}-${x.di}-${x.ei}`,ss=setsOf(s,k);
+  const act=ss.length?ss.map(a=>(a[0]!=null?fmt(a[0])+"×":"")+a[1]).join(", "):(s.ticks[k]?"✓ done":"");
+  h+=`<div class="row ${w==s.week?"cur":""}"><div><div class="wk">W${w}</div><div class="lab">${WEEKS[w-1]}</div></div><div>${t.sets} × ${t.reps}${u}${kgTxt}${tri}${act?`<div class="act">Logged: ${act}</div>`:""}</div></div>`;
+  prev={kg,reps:t.reps}}
+ document.getElementById("ov").innerHTML=h;
+}
+function renderPBs(s){
+ const rows=[];EX.forEach(x=>{const h=history(s,x);if(!h.length)return;
+  if(x.kind=="w"){const wt=h.filter(a=>a.best);if(!wt.length)return;
+   let hv=wt[0],he=wt[0];wt.forEach(a=>{if(a.best[0]>hv.best[0]||(a.best[0]==hv.best[0]&&a.best[1]>hv.best[1]))hv=a;if(a.e1>he.e1)he=a});
+   rows.push(`<div class="pb"><div><div class="nm">${esc(x.name)}</div><div class="meta">Heaviest ${fmt(hv.best[0])} kg × ${hv.best[1]} · ${niceDate(hv.date)} B${hv.b} W${hv.w}</div></div><div class="r"><b>${fmt(he.e1)} kg</b><div class="meta">est. 1RM · B${he.b} W${he.w}</div></div></div>`)}
+  else{let m=h[0];h.forEach(a=>{if(a.maxR>m.maxR)m=a});const u=x.kind=="s"?" s":x.kind=="m"?" min":" reps";
+   rows.push(`<div class="pb"><div><div class="nm">${esc(x.name)}</div><div class="meta">${niceDate(m.date)} B${m.b} W${m.w}</div></div><div class="r"><b>${m.maxR}${u}</b><div class="meta">best set</div></div></div>`)}});
+ document.getElementById("pbs").innerHTML=rows.length?`<div class="pbs">${rows.join("")}</div>`:`<div class="empty" style="margin-top:0">🏆 Your personal bests will show here once you log some sets.</div>`;
+}
+
+/* ---------- MUSIC ---------- */
+function music(s){return s.music||DEF_MUSIC}
+function spotUrl(m){return `https://open.spotify.com/${m.type}/${m.id}`}
+function setMusicLinks(s){const u=spotUrl(music(s));document.getElementById("quickMusic").href=u;document.getElementById("openSpot").href=u}
+function parseSpotify(t){t=(t||"").trim();let m=t.match(/open\.spotify\.com\/(?:intl-[a-z]{2}(?:-[a-z]{2})?\/)?(?:embed\/)?(playlist|album)\/([A-Za-z0-9]{10,40})/i)||t.match(/^spotify:(playlist|album):([A-Za-z0-9]{10,40})$/i);
+ if(m)return{type:m[1].toLowerCase(),id:m[2]};if(/^[A-Za-z0-9]{22}$/.test(t))return{type:"playlist",id:t};return null}
+let embedKey="";
+function renderMusic(){
+ const s=st(),m=music(s),key=m.type+"/"+m.id;setMusicLinks(s);
+ document.getElementById("msub").textContent=s.music?`Your ${m.type}`:"Beast Mode · Spotify";
+ const wrap=document.getElementById("embedWrap");
+ if(!navigator.onLine){if(!wrap.querySelector("iframe"))wrap.innerHTML=`<div class="offl">You're offline. The player needs internet,<br>but Open in Spotify still works with downloaded music.</div>`;return}
+ if(embedKey!==key){embedKey=key;wrap.innerHTML=`<iframe title="Spotify player" src="https://open.spotify.com/embed/${m.type}/${m.id}?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`}
+}
+document.getElementById("lnkSave").onclick=()=>{const p=parseSpotify(document.getElementById("lnk").value),e=document.getElementById("lnkErr");
+ if(!p){e.className="err";e.textContent="That doesn't look like a Spotify playlist or album link.";return}
+ const s=st();s.music=p;save(s);e.className="err ok";e.textContent=`Saved ✓ ${p.type} loaded`;document.getElementById("lnk").value="";renderMusic()};
+document.getElementById("lnkDef").onclick=()=>{const s=st();s.music=null;save(s);const e=document.getElementById("lnkErr");e.className="err ok";e.textContent="Back to Beast Mode ✓";renderMusic()};
+window.addEventListener("online",()=>{if(st().tab=="music"){embedKey="";renderMusic()}});
+
+/* ---------- TABS ---------- */
+function showTab(t){const s=st();s.tab=t;save(s);
+ document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id=="p-"+t));
+ document.querySelectorAll(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.tab==t));
+ if(t=="workouts")render();if(t=="progress")renderProgress();if(t=="music")renderMusic();window.scrollTo(0,0)}
+document.querySelectorAll(".tabbar button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+save(st()); // run migration once
+showTab(["workouts","progress","music"].includes(st().tab)?st().tab:"workouts");
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 </script></body></html>
