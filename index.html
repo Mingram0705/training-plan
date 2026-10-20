@@ -113,6 +113,25 @@ select.fld{background:var(--card);background-image:linear-gradient(45deg,transpa
 .crow{display:grid;grid-template-columns:1.25fr 1fr 1fr 38px;gap:6px;align-items:center;margin-bottom:8px}.crow .fld{margin-top:0;min-height:46px}
 .chip{background:rgba(255,180,84,.12);color:#ffd59a;border-radius:12px;padding:10px 12px;font-size:14px;margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;line-height:1.35}
 .chip b{color:#fff}.chip button{flex:none;border:0;border-radius:9px;background:var(--org);color:#1b1d22;font-weight:700;padding:9px 12px;font-family:inherit;font-size:14px}
+/* scan */
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;left:-9999px}
+label.btn{cursor:pointer}.btn.scanbtn{background:#383c47;font-size:16px}
+.scanbox{background:var(--card);border-radius:14px;padding:12px;margin-bottom:12px}
+.btn.spot2{background:var(--acc);color:#1b1d22;font-size:18px;padding:16px;margin-top:0}
+.row2{display:flex;gap:8px}.row2 .btn{flex:1;font-size:14px;padding:13px 6px;margin:0}.btn.spot2+.row2{margin-top:8px}
+.scanbox .ta{margin-top:10px}
+.scanok{background:rgba(78,240,180,.1);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.45;margin-bottom:12px}
+.scanok .warn{color:#ffd166}.scanok details{margin:8px 0 0;background:none}.scanok summary{padding:4px 0;font-size:13px;color:var(--mut);font-weight:600}
+.scanok pre{white-space:pre-wrap;font-size:12px;color:var(--mut);max-height:220px;overflow:auto;background:#22252d;border-radius:8px;padding:8px;margin:6px 0 0}
+.excard.flag{box-shadow:inset 0 0 0 2px #ffd166}
+.chk{background:#ffd166;color:#1b1d22;font-size:11px;font-weight:800;border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap}
+.cam{font-size:12px;margin-left:6px;opacity:.7}
+.scanline{background:rgba(255,209,102,.1);color:#ffe4a3;border-radius:10px;padding:9px 11px;font-size:13px;margin:10px 0 2px;line-height:1.4}.scanline q{color:#fff}
+.btn.okbtn{background:rgba(255,209,102,.16);color:#ffd166;padding:11px;font-size:14px;margin-top:8px}
+#scanOv{display:none;position:fixed;inset:0;z-index:50;background:rgba(15,16,20,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:24px}
+#scanOv.on{display:flex}#scanOv .sbox{background:var(--card);border-radius:18px;padding:24px 20px;width:100%;max-width:380px;text-align:center}
+#scanOv .big{font-size:42px}#scanOv b{font-size:18px;display:block;margin:6px 0}#scanOv .bar{height:10px;margin:14px 0 6px}
+#scanOv .bar i{transition:width .25s}
 </style></head><body>
 
 <!-- WORKOUTS -->
@@ -163,6 +182,9 @@ Weeks 1–3 keep the weight and add reps. Week 4 bumps the weight and drops back
 <div class="info">In Spotify, tap ••• on a playlist or album, then Share → Copy link, and paste it here.</div>
 </section>
 
+<input type="file" id="scanCam" class="vh" accept="image/*" capture="environment" multiple aria-label="Take a photo of a workout">
+<input type="file" id="scanPick" class="vh" accept="image/*" multiple aria-label="Choose workout photos">
+<div id="scanOv" role="dialog" aria-modal="true" aria-live="polite"><div class="sbox"><div class="big">📷</div><b id="scanTitle">Reading your workout…</b><div id="scanStatus" class="info"></div><div class="bar"><i id="scanBar"></i></div><div class="info">Everything happens on your phone. Nothing is uploaded.</div><button class="btn" id="scanCancel">Cancel</button></div></div>
 <nav class="tabbar"><div class="in">
 <button data-tab="workouts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Workouts</button>
 <button data-tab="log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v9M7.5 12h9"/></svg>Log</button>
@@ -170,6 +192,7 @@ Weeks 1–3 keep the weight and add reps. Week 4 bumps the weight and drops back
 <button data-tab="music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Music</button>
 </div></nav>
 
+<script src="parser.js"></script>
 <script>
 const K="mj-po-v1";
 // [name, sets, repLow, repHigh, baseKg|null, incKg, note, isNew, type]  type: m=minutes, s=seconds
@@ -516,6 +539,7 @@ function renderLog(){
   el.innerHTML=`<h1>Log</h1><div class="sub">Record any workout you've done, then link it to your plan or keep it as an extra session.</div>
   ${logMsg?`<div class="toast">${esc(logMsg)}</div>`:""}
   <button class="btn pri big" data-act="new">＋ Log a workout</button>
+  <label for="scanCam" class="btn scanbtn">📷 Scan a workout</label>
   <h2>History</h2>`+(ws.length?ws.map(w=>{const v=wVolume(w),names=(w.ex||[]).map(e=>e.name),cd=(w.cardio||[]);
    const tag=w.link?`${plan[w.link.di][0].split(" · ")[0]} · B${w.link.b} W${w.link.w}`:"Extra";
    const meta=[longDate(w.date),w.dur?w.dur+" min":"",v?Math.round(v).toLocaleString("en-AU")+" kg":""].filter(Boolean).join(" · ");
@@ -525,6 +549,18 @@ function renderLog(){
   return}
  const editing=!!D.id,sug=suggestDay(),lb=D.lb||s.block,lw=D.lw||s.week,names=allNames(s);
  let h=`<div class="edhead"><button class="back" data-act="cancel">‹ Back</button><b>${editing?"Edit workout":"New workout"}</b><span style="width:60px"></span></div>
+ ${D.scanInfo?`<div class="scanok">📷 Read <b>${D.scanInfo.n}</b> exercise${D.scanInfo.n==1?"":"s"} from ${esc(D.scanInfo.src)}${D.scanInfo.date?` · dated ${esc(longDate(D.scanInfo.date))}`:""}.${D.scanInfo.flagged?` <b class="warn">${D.scanInfo.flagged} need${D.scanInfo.flagged==1?"s":""} a check</b> (marked below).`:""} Fix anything that's off, then tap <b>Save</b>. Nothing is saved until you do.
+  <details><summary>What the camera read</summary><pre>${esc(D.scanInfo.text)}</pre></details><button class="link" data-act="clearscan" style="color:var(--mut)">Dismiss</button></div>`:""}
+ <div class="scanbox">
+  ${D.ex.length?`<div class="row2"><label for="scanCam" class="btn">📷 Scan more</label><label for="scanPick" class="btn">🖼️ Photos</label><button class="btn" data-act="togglepaste">📋 Paste</button></div>`:
+  `<label for="scanCam" class="btn spot2">📷 Scan workout</label>
+  <div class="row2"><label for="scanPick" class="btn">🖼️ Choose from Photos</label><button class="btn" data-act="togglepaste">📋 Paste text</button></div>
+  <div class="info" style="margin-bottom:0">Snap a screen, whiteboard or printed sheet. It's read on your phone, then you check it before saving.</div>`}
+  ${D.showPaste?`<textarea class="fld ta" id="pasteTxt" placeholder="Paste your workout here, e.g.
+Bench Press 3x8 80kg
+Leg Curl 70kg x 12, 12, 10"></textarea><button class="btn pri" data-act="parsepaste">Read text</button>
+  <div class="info">✍️ <b>Handwritten notes?</b> Photo OCR struggles with handwriting. Open the photo in the Photos app, long-press the text (Live Text), tap <b>Select All</b> → <b>Copy</b>, and paste it here.</div>`:""}
+ </div>
  <div class="form card">
   <label class="fl">Date<input class="fld" type="date" data-d="date" value="${esc(D.date)}"></label>
   <label class="fl">Name <span class="opt">optional</span><input class="fld" data-d="name" placeholder="e.g. Hotel gym, Extra arms" value="${esc(D.name)}" autocomplete="off"></label>
@@ -532,7 +568,11 @@ function renderLog(){
  </div>
  <h2>Exercises</h2>`;
  D.ex.forEach((e,xi)=>{const last=lastSetsFor(s,e.name),plan_=isPlanName(e.name);
-  h+=`<div class="excard"><div class="exhead"><div class="n">${esc(e.name)}${plan_?'<span class="new">PLAN</span>':""}</div><button class="link" data-act="rmex" data-x="${xi}">Remove</button></div>`+
+  const sc=e.scan,flag=sc&&sc.conf!="ok";
+  h+=`<div class="excard ${flag?"flag":""}"><div class="exhead"><div class="n">${esc(e.name)}${plan_?'<span class="new">PLAN</span>':""}${flag?'<span class="chk">⚠ check</span>':sc?'<span class="cam" title="From scan">📷</span>':""}</div><button class="link" data-act="rmex" data-x="${xi}">Remove</button></div>`+
+  (flag?`<div class="scanline">${esc(sc.why||"Please check this one")}<br>Read as: <q>${esc(sc.line)}</q></div>
+   <label class="fl">Exercise<select class="fld" data-act-sel="fixname" data-x="${xi}">${[...new Set([...(sc.alts||[]),e.name])].map(n=>`<option ${n==e.name?"selected":""}>${esc(n)}</option>`).join("")}<optgroup label="All exercises">${names.map(n=>`<option value="${esc(n.name)}">${esc(n.name)}</option>`).join("")}</optgroup>${sc.raw&&!names.some(n=>norm(n.name)==norm(sc.raw))?`<option value="${esc(sc.raw.replace(/\b([a-z])/g,c=>c.toUpperCase()))}">New exercise: ${esc(sc.raw)}</option>`:""}</select></label>
+   <button class="btn okbtn" data-act="scanok" data-x="${xi}">✓ Looks right</button>`:"")+
   (plan_?"":`<div class="seg">${[["w","kg × reps"],["b","reps"],["s","seconds"],["m","minutes"]].map(([k,l])=>`<button data-act="kind" data-x="${xi}" data-k="${k}" class="${e.kind==k?"on":""}">${l}</button>`).join("")}</div>`)+
   (last?`<div class="last">Last time (${last.custom?niceDate(last.date)+" · Log":`B${last.b} W${last.w}`}): ${setsTxt(last.sets,e.kind)}</div>`:"")+
   setRowsHTML(e,xi,last)+
@@ -543,7 +583,7 @@ function renderLog(){
  <h2>Notes</h2><textarea class="fld ta" data-d="notes" placeholder="How did it feel? Knee OK?">${esc(D.notes)}</textarea>
  <h2>Counts as</h2>
  <select class="fld" data-d="link"><option value="extra" ${D.link=="extra"?"selected":""}>Extra session (plan stays as is)</option>${plan.map((d,di)=>`<option value="${di}" ${String(D.link)==String(di)?"selected":""}>${esc(d[0])} · B${lb} W${lw}</option>`).join("")}</select>
- ${sug&&String(D.link)!==String(sug.di)?`<div class="chip">💡 Looks like <b>${esc(plan[sug.di][0].split(" · ")[0])}</b> (${sug.c} matching exercise${sug.c>1?"s":""}). <button data-act="usesug" data-di="${sug.di}">Use it</button></div>`:""}
+ ${D.scanDay!=null&&String(D.link)!==String(D.scanDay)?`<div class="chip"><span>📷 Your photo says <b>${esc(plan[D.scanDay][0])}</b>.</span><button data-act="usesug" data-di="${D.scanDay}">Use it</button></div>`:sug&&String(D.link)!==String(sug.di)?`<div class="chip"><span>💡 Looks like <b>${esc(plan[sug.di][0].split(" · ")[0])}</b> (${sug.c} matching exercise${sug.c>1?"s":""}).</span><button data-act="usesug" data-di="${sug.di}">Use it</button></div>`:""}
  <div class="info">Linking fills this week's plan for exercises with the same name and ticks them. Anything you already logged there is only replaced if you say so.</div>
  <button class="btn pri big" data-act="save">${editing?"Save changes":"Save workout"}</button>
  ${editing?`<button class="btn danger" data-act="del">Delete workout</button>`:""}`;
@@ -611,10 +651,18 @@ function openWorkout(id){const s=st(),w=(s.custom||[]).find(x=>x.id==id);if(!w)r
   else if(a=="rmset"){D.ex[xi].sets.splice(+b.dataset.i,1);saveDraft();renderLog()}
   else if(a=="addcardio"){D.cardio.push({type:"Bike",min:"",dist:""});saveDraft();renderLog()}
   else if(a=="rmcardio"){D.cardio.splice(+b.dataset.c,1);saveDraft();renderLog()}
+  else if(a=="togglepaste"){D.showPaste=!D.showPaste;saveDraft();renderLog();const ta=document.getElementById("pasteTxt");if(ta)ta.focus()}
+  else if(a=="parsepaste"){const v=(document.getElementById("pasteTxt")||{}).value||"";if(!v.trim())return;D.showPaste=false;applyParsed(v,"pasted text")}
+  else if(a=="scanok"){D.ex[xi].scan.conf="ok";saveDraft();renderLog()}
+  else if(a=="clearscan"){delete D.scanInfo;saveDraft();renderLog()}
   else if(a=="usesug"){D.link=String(b.dataset.di);saveDraft();renderLog()}
   else if(a=="save")saveWorkout();
   else if(a=="del")deleteWorkout()});
  const onField=ev=>{const t=ev.target;if(!D)return;
+  if(t.dataset.actSel=="fixname"&&ev.type=="change"){const e=D.ex[+t.dataset.x],nk=kindOf(st(),t.value);
+   if(nk!=e.kind){e.sets=e.sets.map(r=>nk=="w"?[r[0],r[1]]:["",r[1]])}e.name=t.value;e.kind=nk;e.scan.conf="ok";saveDraft();renderLog();return}
+  if(t.dataset.actSel)return;
+  if(t.dataset.d=="date")D.dateTouched=true;
   if(t.dataset.d){D[t.dataset.d]=t.value;saveDraft();if(t.dataset.d=="link"&&ev.type=="change")renderLog();return}
   if(t.dataset.x!=null&&t.dataset.f!=null){D.ex[+t.dataset.x].sets[+t.dataset.i][+t.dataset.f]=t.value;saveDraft();return}
   if(t.dataset.c!=null&&t.dataset.cf){D.cardio[+t.dataset.c][t.dataset.cf]=t.value;saveDraft()}};
@@ -622,6 +670,71 @@ function openWorkout(id){const s=st(),w=(s.custom||[]).find(x=>x.id==id);if(!w)r
  el.addEventListener("keydown",ev=>{const t=ev.target;if(ev.key=="Enter"&&t.classList.contains("num")){ev.preventDefault();const all=[...el.querySelectorAll("input.num")];const n=all[all.indexOf(t)+1];if(n)n.focus();else t.blur()}});
  document.addEventListener("click",ev=>{const sb=document.getElementById("sugg");if(sb&&!ev.target.closest(".addex"))sb.classList.remove("on")});
 })();
+
+/* ---------- SCAN (on-device OCR with self-hosted Tesseract.js) ---------- */
+const absUrl=p=>new URL(p,location.href).href;
+let tessLoading=null,scanWorker=null,scanCancelled=false;
+function loadTess(){return tessLoading||(tessLoading=new Promise((res,rej)=>{if(window.Tesseract)return res();const sc=document.createElement("script");sc.src="vendor/tesseract.min.js";
+ sc.onload=()=>res();sc.onerror=()=>{tessLoading=null;sc.remove();rej(new Error("Couldn't load the text reader. The first scan needs internet, after that it works offline."))};document.head.appendChild(sc)}))}
+function scanUI(on,title,status,pct){const o=document.getElementById("scanOv");o.classList.toggle("on",!!on);if(!on)return;
+ if(title!=null)document.getElementById("scanTitle").textContent=title;if(status!=null)document.getElementById("scanStatus").textContent=status;
+ if(pct!=null)document.getElementById("scanBar").style.width=Math.max(2,Math.min(100,Math.round(pct)))+"%"}
+function loadImage(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{res(im);setTimeout(()=>URL.revokeObjectURL(u),1000)};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("Couldn't open that image."))};im.src=u})}
+// downscale big photos, greyscale, flip light-on-dark screenshots, stretch contrast
+async function prepImage(file){
+ const im=await loadImage(file);let w=im.naturalWidth,h=im.naturalHeight;const long=Math.max(w,h);
+ let sc=long>2400?2400/long:1;if(Math.min(w,h)*sc<900)sc=Math.min(2,900/Math.min(w,h));
+ w=Math.round(w*sc);h=Math.round(h*sc);
+ const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d",{willReadFrequently:true});
+ x.imageSmoothingQuality="high";x.drawImage(im,0,0,w,h);
+ const d=x.getImageData(0,0,w,h),p=d.data,hist=new Uint32Array(256);let sum=0;
+ for(let i=0;i<p.length;i+=4){const g=(p[i]*0.299+p[i+1]*0.587+p[i+2]*0.114)|0;p[i]=g;sum+=g;hist[g]++}
+ const n=p.length/4,dark=sum/n<128;
+ let lo=0,hi=255,acc=0;for(let i=0;i<256;i++){acc+=hist[i];if(acc>n*0.02){lo=i;break}}acc=0;for(let i=255;i>=0;i--){acc+=hist[i];if(acc>n*0.02){hi=i;break}}
+ if(hi-lo<40){lo=0;hi=255}const k=255/(hi-lo);
+ for(let i=0;i<p.length;i+=4){let g=(p[i]-lo)*k;g=g<0?0:g>255?255:g;if(dark)g=255-g;p[i]=p[i+1]=p[i+2]=g}
+ x.putImageData(d,0,0);return c}
+async function runScan(files){
+ files=[...files].filter(f=>/^image\//.test(f.type)||/\.(jpe?g|png|heic|heif|webp)$/i.test(f.name));if(!files.length)return;
+ if(!D){D=newDraft();logMsg=""}
+ scanCancelled=false;
+ const first=!localStorage.getItem("mj-ocr-ready");
+ scanUI(true,"Reading your workout…",first?"Downloading the text reader (about 3.5 MB, first time only)…":"Starting the text reader…",3);
+ let texts=[];
+ try{
+  await loadTess();if(scanCancelled)return;
+  let phase=0;const N=files.length;
+  scanWorker=await Tesseract.createWorker("eng",1,{workerPath:absUrl("vendor/worker.min.js"),corePath:absUrl("vendor/core/"),langPath:absUrl("vendor/lang"),workerBlobURL:false,gzip:true,
+   logger:m=>{if(scanCancelled)return;const pr=m.progress||0;
+    if(m.status=="recognizing text")scanUI(true,null,N>1?`Reading photo ${phase+1} of ${N}…`:"Reading your photo…",35+65*(phase+pr)/N);
+    else if(/core/.test(m.status))scanUI(true,null,first?"Downloading the text reader (first time only)…":"Starting the text reader…",3+20*pr);
+    else if(/traineddata/.test(m.status))scanUI(true,null,first?"Downloading English text model (first time only)…":"Loading text model…",23+10*pr);
+    else scanUI(true,null,"Getting ready…",33)}});
+  localStorage.setItem("mj-ocr-ready","1");
+  for(phase=0;phase<N;phase++){if(scanCancelled)break;
+   scanUI(true,null,N>1?`Preparing photo ${phase+1} of ${N}…`:"Preparing your photo…",35+65*phase/N);
+   const canvas=await prepImage(files[phase]);const r=await scanWorker.recognize(canvas);texts.push(r.data.text||"")}
+ }catch(err){scanUI(false);if(!scanCancelled)alert((err&&err.message)||"Something went wrong reading the photo. Try the Paste text option instead.");console.warn(err)}
+ finally{if(scanWorker){try{await scanWorker.terminate()}catch(e){}scanWorker=null}}
+ if(scanCancelled){scanUI(false);return}
+ scanUI(false);
+ applyParsed(texts.join("\n\n"),files.length>1?`${files.length} photos`:"your photo");
+}
+function parserList(s){return[...EX.map(x=>({name:x.name,kind:x.kind})),...customExList(s).map(x=>({name:x.name,kind:x.kind}))]}
+function applyParsed(text,source){
+ const s=st();if(!D)D=newDraft();
+ const res=WorkoutParser.parseWorkoutText(text,{exercises:parserList(s),today:new Date()});
+ res.exercises.forEach(p=>D.ex.push({name:p.name,kind:p.kind,sets:p.sets.map(([kg,v])=>p.kind=="w"?[kg??"",v??""]:["",v??""]),
+  scan:{conf:p.conf,why:p.why||"",line:p.line,raw:p.raw,alts:p.alts||[]}}));
+ if(res.date&&!D.dateTouched)D.date=res.date;
+ if(!D.name&&res.title)D.name=res.title;
+ if(res.dayNum&&res.dayNum<=plan.length)D.scanDay=res.dayNum-1;
+ D.scanInfo={n:res.exercises.length,flagged:res.exercises.filter(e=>e.conf!="ok").length,src:source,date:res.date,text:String(text).slice(0,4000)};
+ saveDraft();renderLog();window.scrollTo(0,0);
+ if(!res.exercises.length)alert("I couldn't find any exercises in that. Try a clearer, straight-on photo, or use Paste text.");
+}
+["scanCam","scanPick"].forEach(id=>document.getElementById(id).addEventListener("change",ev=>{const f=ev.target.files;if(f&&f.length){if(st().tab!="log")showTab("log");runScan(f)}ev.target.value=""}));
+document.getElementById("scanCancel").onclick=async()=>{scanCancelled=true;if(scanWorker){try{await scanWorker.terminate()}catch(e){}scanWorker=null}scanUI(false)};
 
 /* ---------- TABS ---------- */
 function showTab(t){const s=st();s.tab=t;save(s);
