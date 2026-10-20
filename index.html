@@ -699,7 +699,7 @@ async function runScan(files){
  if(!D){D=newDraft();logMsg=""}
  scanCancelled=false;
  const first=!localStorage.getItem("mj-ocr-ready");
- scanUI(true,"Reading your workout…",first?"Downloading the text reader (about 3.5 MB, first time only)…":"Starting the text reader…",3);
+ scanUI(true,"Reading your workout…",first?"Downloading the text reader (about 4.5 MB, first time only)…":"Starting the text reader…",3);
  let texts=[];
  try{
   await loadTess();if(scanCancelled)return;
