@@ -85,6 +85,34 @@ select{width:100%;height:48px;background:var(--card);color:var(--txt);border:1px
 #embedWrap{border-radius:14px;overflow:hidden;background:#181a20;min-height:352px}
 #embedWrap iframe{display:block;border:0;width:100%;height:352px}
 .offl{padding:40px 16px;text-align:center;color:var(--mut);font-size:14px}
+/* log tab */
+.btn.big{font-size:17px;padding:16px}.btn.danger{background:rgba(255,107,107,.14);color:#ff7b7b;margin-top:10px}
+.toast{background:rgba(78,240,180,.12);color:var(--acc);border-radius:12px;padding:12px 14px;font-size:14px;font-weight:600;margin-bottom:10px;line-height:1.4}
+.wcard{display:block;width:100%;text-align:left;background:var(--card);border:0;border-radius:14px;padding:14px 16px;margin-bottom:10px;color:var(--txt);font-family:inherit;font-size:15px}
+.wcard .wtop{display:flex;justify-content:space-between;gap:8px;align-items:center}.wcard .meta{color:var(--mut);font-size:13px;margin-top:4px}.wcard .exs{font-size:13.5px;margin-top:6px;color:#c9ccd3;line-height:1.4}
+.tag{font-size:11.5px;font-weight:700;color:var(--mut);border:1px solid var(--line);border-radius:8px;padding:2px 7px;white-space:nowrap}.tag.lk{color:var(--acc);border-color:var(--acc)}
+.edhead{display:flex;justify-content:space-between;align-items:center;margin:2px 0 12px;font-size:17px}
+.back{background:none;border:0;color:var(--acc);font-size:17px;font-weight:600;padding:8px 0;font-family:inherit;width:60px;text-align:left}
+.form{display:grid;gap:12px}.fl{display:block;font-size:13px;color:var(--mut);font-weight:600}.fl .opt{font-weight:400;color:#6c7280}
+.fld{display:block;width:100%;min-height:48px;margin-top:6px;background:#22252d;border:1px solid var(--line);border-radius:12px;color:var(--txt);padding:0 12px;font-size:16px;font-family:inherit;-webkit-appearance:none;appearance:none}
+.fld:focus{outline:none;border-color:var(--acc)}input.fld[type=date]{line-height:48px;color-scheme:dark}
+select.fld{background:var(--card);background-image:linear-gradient(45deg,transparent 50%,var(--mut) 50%),linear-gradient(135deg,var(--mut) 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 14px) 21px;background-size:6px 6px;background-repeat:no-repeat;padding-right:34px}
+.ta{min-height:84px;padding:12px;line-height:1.4;resize:vertical}
+.excard{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px}
+.exhead{display:flex;justify-content:space-between;align-items:center;gap:8px}.exhead .n{font-size:16px}
+.link{background:none;border:0;color:#ff7b7b;font-size:14px;font-weight:600;padding:6px 0;font-family:inherit}
+.seg{display:flex;background:#22252d;border-radius:10px;padding:3px;margin-top:10px;gap:3px}
+.seg button{flex:1;border:0;background:none;color:var(--mut);font-size:13px;font-weight:600;padding:8px 0;border-radius:8px;font-family:inherit}.seg button.on{background:var(--line);color:var(--txt)}
+.srow.ed{grid-template-columns:44px 1fr 18px 1fr 38px}.srow.one.ed{grid-template-columns:44px 1fr 50px 38px}
+.rm{height:46px;border:0;background:none;color:#6c7280;font-size:16px;font-family:inherit}
+.exbtns{display:flex;gap:6px;margin-top:10px}.exbtns button{flex:1;min-height:42px;border:0;border-radius:10px;background:#383c47;color:var(--txt);font-size:13px;font-weight:600;font-family:inherit;padding:0 4px}
+.exbtns button:disabled{opacity:.35}
+.addex{position:relative}#sugg{display:none;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-top:6px;overflow:hidden}#sugg.on{display:block}
+#sugg button{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);color:var(--txt);font-size:15.5px;padding:13px 14px;font-family:inherit}
+#sugg button:first-child{border-top:0}.tg{font-size:11px;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:1px 5px}.tg.own{color:var(--org);border-color:var(--org)}
+.crow{display:grid;grid-template-columns:1.25fr 1fr 1fr 38px;gap:6px;align-items:center;margin-bottom:8px}.crow .fld{margin-top:0;min-height:46px}
+.chip{background:rgba(255,180,84,.12);color:#ffd59a;border-radius:12px;padding:10px 12px;font-size:14px;margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;line-height:1.35}
+.chip b{color:#fff}.chip button{flex:none;border:0;border-radius:9px;background:var(--org);color:#1b1d22;font-weight:700;padding:9px 12px;font-family:inherit;font-size:14px}
 </style></head><body>
 
 <!-- WORKOUTS -->
@@ -103,6 +131,9 @@ Weeks 1–3 keep the weight and add reps. Week 4 bumps the weight and drops back
 <b>Knee:</b> keep everything pain-free. Drop weight before you drop form.</div>
 <button class="btn" id="reset">Reset everything</button>
 </section>
+
+<!-- LOG -->
+<section class="panel" id="p-log"><div id="logBody"></div></section>
 
 <!-- PROGRESS -->
 <section class="panel" id="p-progress">
@@ -134,6 +165,7 @@ Weeks 1–3 keep the weight and add reps. Week 4 bumps the weight and drops back
 
 <nav class="tabbar"><div class="in">
 <button data-tab="workouts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Workouts</button>
+<button data-tab="log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v9M7.5 12h9"/></svg>Log</button>
 <button data-tab="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 16l4-5 4 3 6-8"/><circle cx="19" cy="6" r="1.2" fill="currentColor"/></svg>Progress</button>
 <button data-tab="music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Music</button>
 </div></nav>
@@ -186,6 +218,8 @@ function migrate(s){
    const m=t.match(/^(\d+(?:\.\d+)?)\s*kg\s*[x×@:\-]?\s*(\d+(?:\s*[,\/ ]\s*\d+)*)$/i);
    if(m){const kg=+m[1];s.sets[k]=m[2].split(/[,\/ ]+/).filter(Boolean).map(r=>[kg,+r]);}}
   s.v=2;}
+ if(s.v<3){s.custom=Array.isArray(s.custom)?s.custom:[];s.v=3} // v3: workouts logged on the Log tab
+ s.custom=Array.isArray(s.custom)?s.custom:[];
  return s;}
 function st(){let s;try{s=JSON.parse(localStorage.getItem(K))}catch(e){s=null}return migrate(s)}
 function save(s){localStorage.setItem(K,JSON.stringify(s))}
@@ -227,13 +261,24 @@ const kparse=k=>{const [b,w,di,ei]=k.split("-").map(Number);return{b,w,di,ei,idx
 const kidx=(b,w)=>(b-1)*6+(w-1);
 // cleaned logged sets for a key
 function setsOf(s,k){return (s.sets[k]||[]).map(a=>[a[0]===""||a[0]==null?null:+a[0],a[1]===""||a[1]==null?null:+a[1]]).filter(a=>a[1]!=null&&!isNaN(a[1])&&a[1]>0)}
-// all logged entries for an exercise, sorted
-function history(s,x){const out=[];for(const k in s.sets){const p=kparse(k);if(p.di!=x.di||p.ei!=x.ei)continue;const ss=setsOf(s,k);if(!ss.length)continue;
- let best=null,e1=0,maxR=0;ss.forEach(([kg,r])=>{maxR=Math.max(maxR,r);if(kg!=null&&kg>0){if(!best||kg>best[0]||(kg==best[0]&&r>best[1]))best=[kg,r];e1=Math.max(e1,kg*(1+r/30))}});
- out.push({k,...p,sets:ss,best,e1,maxR,date:s.dates[k]})}
- return out.sort((a,b)=>a.idx-b.idx)}
-// start weight for exercises where you pick the weight: first logged kg minus that week's planned offset
-function startKg(s,x){if(x.e[4]!=null)return x.e[4];const h=history(s,x).filter(h=>h.best);if(!h.length)return null;const f=h[0];return f.best[0]-tnum(x.e,f.w,f.b).off}
+// ---- shared helpers for plan + custom (Log tab) data ----
+const norm=n=>String(n||"").trim().toLowerCase().replace(/\s+/g," ");
+const UNIT={w:"reps",b:"reps",s:"sec",m:"min"};
+const numOrNull=v=>{if(v===""||v==null)return null;const n=+String(v).replace(",",".");return isNaN(n)?null:n};
+function cleanSets(arr,kind){return (arr||[]).map(a=>[numOrNull(a[0]),numOrNull(a[1])]).filter(a=>a[1]!=null&&a[1]>0).map(a=>kind=="w"?a:[null,a[1]])}
+function summarize(ss){let best=null,e1=0,maxR=0;ss.forEach(([kg,r])=>{maxR=Math.max(maxR,r);if(kg!=null&&kg>0){if(!best||kg>best[0]||(kg==best[0]&&r>best[1]))best=[kg,r];e1=Math.max(e1,kg*(1+r/30))}});return{best,e1,maxR}}
+// custom-logged exercise entries (those already copied into a plan day are counted via the plan instead)
+function customEntries(s){const out=[];(s.custom||[]).forEach(w=>(w.ex||[]).forEach(e=>{if(e.pk)return;const ss=cleanSets(e.sets,e.kind);if(!ss.length)return;
+ out.push({wid:w.id,name:e.name,kind:e.kind,sets:ss,b:w.b,w:w.w,idx:kidx(w.b,w.w),date:w.date,custom:true,wname:w.name})}));return out}
+// exercises he's logged that aren't in the plan
+function customExList(s){const m=new Map();(s.custom||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))).forEach(w=>(w.ex||[]).forEach(e=>{const n=norm(e.name);if(!n||EX.some(x=>norm(x.name)==n))return;m.set(n,{name:e.name.trim(),kind:e.kind||"w",custom:true,di:null})}));return [...m.values()].sort((a,b)=>a.name.localeCompare(b.name))}
+// all logged entries for an exercise (plan logs + Log-tab sessions), sorted by week then date
+function history(s,x){const out=[];
+ if(x.di!=null)for(const k in s.sets){const p=kparse(k);if(p.di!=x.di||p.ei!=x.ei)continue;const ss=setsOf(s,k);if(!ss.length)continue;out.push({k,...p,sets:ss,...summarize(ss),date:s.dates[k]})}
+ customEntries(s).forEach(c=>{if(norm(c.name)==norm(x.name))out.push({...c,...summarize(c.sets)})});
+ return out.sort((a,b)=>a.idx-b.idx||String(a.date||"").localeCompare(String(b.date||"")))}
+// start weight for exercises where you pick the weight: first logged plan kg minus that week's planned offset
+function startKg(s,x){if(x.e[4]!=null)return x.e[4];const h=history(s,x).filter(h=>h.best&&!h.custom);if(!h.length)return null;const f=h[0];return f.best[0]-tnum(x.e,f.w,f.b).off}
 function plannedKg(s,x,w,b){const t=tnum(x.e,w,b);if(t.kg!=null)return t.kg;if(t.off!=null){const sk=startKg(s,x);return sk==null?null:r1(sk+t.off)}return null}
 
 /* ---------- WORKOUTS ---------- */
@@ -245,10 +290,10 @@ function setInputs(s,x,k,wk,b){
   else{const u=x.kind=="s"?"sec":x.kind=="m"?"min":"reps";
    h+=`<div class="srow one"><label>Set ${i+1}</label><input class="num" inputmode="decimal" data-k="${k}" data-i="${i}" data-f="1" placeholder="${t.reps}" value="${v[1]??""}" aria-label="Set ${i+1} ${u}"><span class="u">${u}</span></div>`}}
  return h+'</div>'}
+function setsTxt(sets,kind){const u=kind=="s"?" s":kind=="m"?" min":"";
+ return kind=="w"&&sets.every(a=>a[0]!=null)&&new Set(sets.map(a=>a[0])).size==1?`${fmt(sets[0][0])} kg × ${sets.map(a=>a[1]).join(", ")}`:sets.map(a=>(a[0]!=null?fmt(a[0])+"×":"")+a[1]+u).join(", ")}
 function lastTime(s,x,b,wk){const h=history(s,x).filter(h=>h.idx<kidx(b,wk));if(!h.length)return"";const l=h[h.length-1];
- const u=x.kind=="s"?" s":x.kind=="m"?" min":"";
- const txt=x.kind=="w"&&l.sets.every(a=>a[0]!=null)&&new Set(l.sets.map(a=>a[0])).size==1?`${fmt(l.sets[0][0])} kg × ${l.sets.map(a=>a[1]).join(", ")}`:l.sets.map(a=>(a[0]!=null?fmt(a[0])+"×":"")+a[1]+u).join(", ");
- return `<div class="last">Last time (B${l.b} W${l.w}): ${txt}</div>`}
+ return `<div class="last">Last time (${l.custom?niceDate(l.date)+" · Log":`B${l.b} W${l.w}`}): ${setsTxt(l.sets,x.kind)}</div>`}
 function render(){
  const s=st(),wk=s.week,b=s.block;
  document.getElementById("blk").textContent=`Block ${b} · Tick each exercise as you finish it. Everything saves on this phone.`;
@@ -304,51 +349,64 @@ function refreshRow(k){ // update tick + day summary without re-rendering (keeps
  const W=document.getElementById("weeks").children;
  for(let i=1;i<=6;i++){const all=plan.every((dd,di)=>dd[1].every((_,ei)=>s.ticks[`${s.block}-${i}-${di}-${ei}`]));W[i-1].className=i==s.week?"on":all?"fin":""}
 }
-document.getElementById("reset").onclick=()=>{if(confirm("Clear all ticks, logs and go back to Block 1, Week 1?")){const m=st().music;localStorage.removeItem(K);if(m){const s=st();s.music=m;save(s)}render()}};
+document.getElementById("reset").onclick=()=>{if(confirm("Clear all ticks, set logs, Log-tab workouts and go back to Block 1, Week 1?")){const m=st().music;localStorage.removeItem(K);if(m){const s=st();s.music=m;save(s)}render()}};
 
 /* ---------- PROGRESS ---------- */
+function dayKeys(b,w,di){return plan[di][1].map((_,ei)=>`${b}-${w}-${di}-${ei}`)}
 function stats(s){
  const keys=new Set([...Object.keys(s.ticks).filter(k=>s.ticks[k]),...Object.keys(s.sets)]);
- let maxB=s.block;keys.forEach(k=>maxB=Math.max(maxB,kparse(k).b));
- let workouts=0;const active={};
- for(let b=1;b<=maxB;b++)for(let w=1;w<=6;w++){plan.forEach((d,di)=>{const ks=d[1].map((_,ei)=>`${b}-${w}-${di}-${ei}`);
-  if(ks.every(k=>s.ticks[k]))workouts++;if(ks.some(k=>s.ticks[k]||setsOf(s,k).length))active[kidx(b,w)]=1})}
+ let maxB=s.block;keys.forEach(k=>maxB=Math.max(maxB,kparse(k).b));(s.custom||[]).forEach(w=>maxB=Math.max(maxB,w.b||1));
+ let workouts=0,planDone=0,extra=0;const active={};
+ for(let b=1;b<=maxB;b++)for(let w=1;w<=6;w++){plan.forEach((d,di)=>{const ks=dayKeys(b,w,di);
+  if(ks.every(k=>s.ticks[k]))planDone++;if(ks.some(k=>s.ticks[k]||setsOf(s,k).length))active[kidx(b,w)]=1})}
+ (s.custom||[]).forEach(w=>{active[kidx(w.b,w.w)]=1;
+  // a Log-tab workout linked to a plan day that's now fully ticked is already counted as that plan day
+  if(!(w.link&&dayKeys(w.link.b,w.link.w,w.link.di).every(k=>s.ticks[k])))extra++});
+ workouts=planDone+extra;
  const cur=kidx(s.block,s.week);let i=active[cur]?cur:cur-1,streak=0;while(i>=0&&active[i]){streak++;i--}
- const vol=(b,w)=>{let v=0;plan.forEach((d,di)=>d[1].forEach((_,ei)=>setsOf(s,`${b}-${w}-${di}-${ei}`).forEach(([kg,r])=>{if(kg)v+=kg*r})));return v};
+ const CE=customEntries(s);
+ const vol=(b,w)=>{let v=0;plan.forEach((d,di)=>d[1].forEach((_,ei)=>setsOf(s,`${b}-${w}-${di}-${ei}`).forEach(([kg,r])=>{if(kg)v+=kg*r})));
+  CE.forEach(c=>{if(c.b==b&&c.w==w)c.sets.forEach(([kg,r])=>{if(kg)v+=kg*r})});return v};
  const thisV=vol(s.block,s.week);let pb=s.block,pw=s.week-1;if(pw<1){pb--;pw=6}const lastV=pb>=1?vol(pb,pw):0;
  let tot=0,dn=0;plan.forEach((d,di)=>d[1].forEach((_,ei)=>{tot++;if(s.ticks[`${s.block}-${s.week}-${di}-${ei}`])dn++}));
- const anyLog=Object.keys(s.sets).some(k=>setsOf(s,k).length);
- return{workouts,streak,thisV,lastV,pct:Math.round(dn/tot*100),dn,tot,anyLog,maxB}}
+ const anyLog=Object.keys(s.sets).some(k=>setsOf(s,k).length)||CE.length>0;
+ return{workouts,planDone,extra,streak,thisV,lastV,pct:Math.round(dn/tot*100),dn,tot,anyLog,maxB}}
+function exFromVal(s,v){if(String(v).startsWith("c:")){const n=v.slice(2);return customExList(s).find(x=>norm(x.name)==n)||null}
+ const [di,ei]=String(v).split("-").map(Number);return exAt(di,ei)||null}
 function renderProgress(){
  const s=st(),S=stats(s);
  document.getElementById("psub").textContent=`Block ${s.block} · Week ${s.week} (${WEEKS[s.week-1]})`;
  const diff=S.thisV-S.lastV,dp=S.lastV?Math.round(diff/S.lastV*100):null;
  document.getElementById("cards").innerHTML=
- `<div class="card"><div class="k">Workouts done</div><div class="v">${S.workouts}</div><div class="s">all exercises ticked</div></div>`+
+ `<div class="card"><div class="k">Workouts done</div><div class="v">${S.workouts}</div><div class="s">${S.planDone} plan days${S.extra?` + ${S.extra} logged`:""}</div></div>`+
  `<div class="card"><div class="k">Weekly streak</div><div class="v">${S.streak} 🔥</div><div class="s">${S.streak==1?"week":"weeks"} in a row</div></div>`+
  `<div class="card"><div class="k">Volume this week</div><div class="v">${Math.round(S.thisV).toLocaleString("en-AU")}<span style="font-size:14px;color:var(--mut)"> kg</span></div><div class="s">last week ${Math.round(S.lastV).toLocaleString("en-AU")} kg${dp!=null?`<br><span class="${diff>=0?"pos":"neg"}">${diff>=0?"▲":"▼"} ${Math.abs(dp)}%</span>`:""}</div></div>`+
  `<div class="card"><div class="k">Week ${s.week} complete</div><div class="v">${S.pct}%</div><div class="s">${S.dn} of ${S.tot} exercises</div><div class="bar"><i style="width:${S.pct}%"></i></div></div>`;
- document.getElementById("pempty").innerHTML=S.anyLog?"":`<div class="empty"><div class="big">📈</div><b>No lifts logged yet</b><br>Type your kg and reps under each exercise on the Workouts tab. Your charts and personal bests will build up here every week.<button class="btn pri" style="margin-top:14px" onclick="showTab('workouts')">Go to Workouts</button></div>`;
- // dropdown
- const sel=document.getElementById("exSel");
- if(!sel.options.length){let h="";plan.forEach((d,di)=>{h+=`<optgroup label="${esc(d[0])}">`+d[1].map((e,ei)=>`<option value="${di}-${ei}">${esc(e[0])}</option>`).join("")+"</optgroup>"});sel.innerHTML=h;
-  sel.onchange=()=>{const s2=st();s2.pex=sel.value;save(s2);renderProgress()}}
- let pex=s.pex;if(!pex){const f=EX.find(x=>history(s,x).length);pex=f?`${f.di}-${f.ei}`:"0-0"}sel.value=pex;
- const [di,ei]=pex.split("-").map(Number),x=exAt(di,ei);
+ document.getElementById("pempty").innerHTML=S.anyLog?"":`<div class="empty"><div class="big">📈</div><b>No lifts logged yet</b><br>Type your kg and reps under each exercise on the Workouts tab, or log your own session on the Log tab. Your charts and personal bests will build up here every week.<button class="btn pri" style="margin-top:14px" onclick="showTab('workouts')">Go to Workouts</button></div>`;
+ // dropdown: plan exercises + his own exercises
+ const sel=document.getElementById("exSel"),CX=customExList(s);
+ let h="";plan.forEach((d,di)=>{h+=`<optgroup label="${esc(d[0])}">`+d[1].map((e,ei)=>`<option value="${di}-${ei}">${esc(e[0])}</option>`).join("")+"</optgroup>"});
+ if(CX.length)h+=`<optgroup label="Your own exercises">`+CX.map(x=>`<option value="c:${esc(norm(x.name))}">${esc(x.name)}</option>`).join("")+"</optgroup>";
+ sel.innerHTML=h;sel.onchange=()=>{const s2=st();s2.pex=sel.value;save(s2);renderProgress()};
+ let pex=s.pex,x=pex?exFromVal(s,pex):null;
+ if(!x){const f=EX.find(x=>history(s,x).length)||CX[0];x=f||EX[0];pex=x.custom?"c:"+norm(x.name):`${x.di}-${x.ei}`}
+ sel.value=pex;
  drawChart(s,x);renderOverview(s,x);renderPBs(s);
 }
 function drawChart(s,x){
  const h=history(s,x),lastIdx=Math.max(kidx(s.block,6),...h.map(a=>a.idx));const N=lastIdx+1;
  const isW=x.kind=="w",unit=isW?"kg":x.kind=="s"?"s":x.kind=="m"?"min":"reps";
  const plan_=[],act=[],e1=[];
- for(let i=0;i<N;i++){const b=Math.floor(i/6)+1,w=i%6+1;plan_.push(isW?plannedKg(s,x,w,b):tnum(x.e,w,b).reps)}
- h.forEach(a=>{if(isW){if(a.best){act.push([a.idx,a.best[0]]);e1.push([a.idx,Math.round(a.e1*10)/10])}}else act.push([a.idx,a.maxR])});
+ for(let i=0;i<N;i++){const b=Math.floor(i/6)+1,w=i%6+1;plan_.push(x.custom?null:isW?plannedKg(s,x,w,b):tnum(x.e,w,b).reps)}
+ // Log-tab sessions sit slightly right of their week so they don't hide the plan dot
+ h.forEach(a=>{const px=a.idx+(a.custom?.35:0);if(isW){if(a.best){act.push([px,a.best[0],a.custom]);e1.push([px,Math.round(a.e1*10)/10,a.custom])}}else act.push([px,a.maxR,a.custom])});
+ const byX=(p,q)=>p[0]-q[0];act.sort(byX);e1.sort(byX);const XM=Math.max(N-1,...act.map(p=>p[0]));
  const vals=[...plan_.filter(v=>v!=null),...act.map(a=>a[1]),...e1.map(a=>a[1])];
  const box=document.getElementById("chartBox"),lg=document.getElementById("legend");
  if(!vals.length){box.innerHTML=`<div class="offl">Log a set of ${esc(x.name)} to start this chart.<br>You pick the weight for this one, so the plan line appears after your first log.</div>`;lg.innerHTML="";return}
  let mn=Math.min(...vals),mx=Math.max(...vals);if(mn==mx){mn-=5;mx+=5}const pad=(mx-mn)*.12;mn=Math.max(0,mn-pad);mx+=pad;
  const Wd=360,Ht=210,L=36,R=10,T=12,B=34,cw=Wd-L-R,ch=Ht-T-B;
- const X=i=>L+(N==1?cw/2:i*cw/(N-1)),Y=v=>T+ch-(v-mn)/(mx-mn)*ch;
+ const X=i=>L+(XM==0?cw/2:i*cw/XM),Y=v=>T+ch-(v-mn)/(mx-mn)*ch;
  let g=`<svg viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="${esc(x.name)} chart" font-family="-apple-system,system-ui,sans-serif">`;
  for(let j=0;j<=4;j++){const v=mn+(mx-mn)*j/4,y=Y(v);g+=`<line x1="${L}" x2="${Wd-R}" y1="${y}" y2="${y}" stroke="#383c47" stroke-width="1"/><text x="${L-5}" y="${y+3.5}" font-size="10" fill="#9aa0ab" text-anchor="end">${Math.round(v)}</text>`}
  const step=N>18?3:N>12?2:1;
@@ -357,37 +415,47 @@ function drawChart(s,x){
   if(i%step==0||w==1)g+=`<text x="${X(i)}" y="${T+ch+14}" font-size="10" fill="${i==kidx(s.block,s.week)?"#4ef0b4":"#9aa0ab"}" text-anchor="middle">W${w}</text>`;
   if(w==1)g+=`<text x="${X(i)}" y="${T+ch+27}" font-size="9.5" fill="#6c7280" text-anchor="${i==0?"start":"middle"}">Block ${b}</text>`}
  const cx=X(kidx(s.block,s.week));g+=`<rect x="${cx-7}" y="${T}" width="14" height="${ch}" fill="#4ef0b4" opacity=".07" rx="3"/>`;
- // planned: step line
  let pp="",started=false;plan_.forEach((v,i)=>{if(v==null){started=false;return}const y=Y(v);if(!started){pp+=`M${X(i)} ${y}`;started=true}else pp+=`H${X(i)}V${y}`});
  if(pp)g+=`<path d="${pp}" fill="none" stroke="#c9ccd3" stroke-width="2" stroke-dasharray="5 4" opacity=".8"/>`;
- const line=(pts,col)=>{if(!pts.length)return"";let d=pts.map((p,j)=>(j?"L":"M")+X(p[0])+" "+Y(p[1])).join("");return `<path d="${d}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>`+pts.map(p=>`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3.6" fill="${col}" stroke="#2c303a" stroke-width="1.5"/>`).join("")};
+ // solid dots = plan logs, hollow dots = sessions from the Log tab
+ const line=(pts,col)=>{if(!pts.length)return"";let d=pts.map((p,j)=>(j?"L":"M")+X(p[0])+" "+Y(p[1])).join("");return `<path d="${d}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>`+
+  pts.map(p=>p[2]?`<circle class="cpt" cx="${X(p[0])}" cy="${Y(p[1])}" r="4.4" fill="#2c303a" stroke="${col}" stroke-width="2.2"/>`:`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3.6" fill="${col}" stroke="#2c303a" stroke-width="1.5"/>`).join("")};
  g+=line(e1,"#ffb454")+line(act,"#4ef0b4");
  const la=act[act.length-1];if(la)g+=`<text x="${Math.min(X(la[0]),Wd-R-14)}" y="${Y(la[1])-8}" font-size="10.5" font-weight="700" fill="#4ef0b4" text-anchor="middle">${fmt(la[1])}</text>`;
  box.innerHTML=g+"</svg>";
- lg.innerHTML=`<span><i style="background:#c9ccd3"></i>Planned ${isW?"weight":unit}</span><span><i style="background:#4ef0b4"></i>${isW?"Best set (kg)":"Your best ("+unit+")"}</span>`+(isW?`<span><i style="background:#ffb454"></i>Est. 1RM</span>`:"");
+ lg.innerHTML=(x.custom?"":`<span><i style="background:#c9ccd3"></i>Planned ${isW?"weight":unit}</span>`)+`<span><i style="background:#4ef0b4"></i>${isW?"Best set (kg)":"Your best ("+unit+")"}</span>`+(isW?`<span><i style="background:#ffb454"></i>Est. 1RM</span>`:"")+
+  (h.some(a=>a.custom)?`<span><i style="width:10px;height:10px;border-radius:50%;border:2px solid #9aa0ab;background:none"></i>Log-tab session</span>`:"");
 }
 function renderOverview(s,x){
  const b=s.block,isW=x.kind=="w",u=x.kind=="s"?" s":x.kind=="m"?" min":" reps";
+ if(x.custom){document.getElementById("ovTitle").textContent=`Your sessions · ${x.name}`;
+  const h=history(s,x).slice().reverse();
+  document.getElementById("ov").innerHTML=`<div class="row"><div class="wk">🗒️</div><div class="lab">Not part of the plan, so there are no planned targets. Here's everything you've logged.</div></div>`+
+   h.map(a=>`<div class="row"><div><div class="wk">${niceDate(a.date)}</div><div class="lab">B${a.b} W${a.w}</div></div><div>${setsTxt(a.sets,a.kind||x.kind)}${a.wname?`<div class="act">${esc(a.wname)}</div>`:""}</div></div>`).join("");return}
  document.getElementById("ovTitle").textContent=`Block ${b} overview · ${x.name}`;
  let h="",prev=null;
  if(b>1){const pt=tnum(x.e,6,b-1);prev={kg:isW?plannedKg(s,x,6,b-1):null,reps:pt.reps}}
+ const CE=customEntries(s).filter(c=>norm(c.name)==norm(x.name));
  for(let w=1;w<=6;w++){const t=tnum(x.e,w,b),kg=isW?plannedKg(s,x,w,b):null;
   let tri="";
   if(w<6&&prev){if(kg!=null&&prev.kg!=null&&kg>prev.kg)tri=`<span class="tri">▲ ${fmt(kg-prev.kg)} kg</span>`;else if(t.reps>prev.reps)tri=`<span class="tri">▲ reps</span>`;}
   const kgTxt=isW?(kg!=null?` @ ${fmt(kg)} kg`:t.off?` @ start +${fmt(t.off)} kg`:" @ your start weight"):"";
   const k=`${b}-${w}-${x.di}-${x.ei}`,ss=setsOf(s,k);
   const act=ss.length?ss.map(a=>(a[0]!=null?fmt(a[0])+"×":"")+a[1]).join(", "):(s.ticks[k]?"✓ done":"");
-  h+=`<div class="row ${w==s.week?"cur":""}"><div><div class="wk">W${w}</div><div class="lab">${WEEKS[w-1]}</div></div><div>${t.sets} × ${t.reps}${u}${kgTxt}${tri}${act?`<div class="act">Logged: ${act}</div>`:""}</div></div>`;
+  const extra=CE.filter(c=>c.b==b&&c.w==w).map(c=>`<div class="act">Log ${niceDate(c.date)}: ${setsTxt(c.sets,c.kind)}</div>`).join("");
+  h+=`<div class="row ${w==s.week?"cur":""}"><div><div class="wk">W${w}</div><div class="lab">${WEEKS[w-1]}</div></div><div>${t.sets} × ${t.reps}${u}${kgTxt}${tri}${act?`<div class="act">Logged: ${act}</div>`:""}${extra}</div></div>`;
   prev={kg,reps:t.reps}}
  document.getElementById("ov").innerHTML=h;
 }
 function renderPBs(s){
- const rows=[];EX.forEach(x=>{const h=history(s,x);if(!h.length)return;
-  if(x.kind=="w"){const wt=h.filter(a=>a.best);if(!wt.length)return;
-   let hv=wt[0],he=wt[0];wt.forEach(a=>{if(a.best[0]>hv.best[0]||(a.best[0]==hv.best[0]&&a.best[1]>hv.best[1]))hv=a;if(a.e1>he.e1)he=a});
-   rows.push(`<div class="pb"><div><div class="nm">${esc(x.name)}</div><div class="meta">Heaviest ${fmt(hv.best[0])} kg × ${hv.best[1]} · ${niceDate(hv.date)} B${hv.b} W${hv.w}</div></div><div class="r"><b>${fmt(he.e1)} kg</b><div class="meta">est. 1RM · B${he.b} W${he.w}</div></div></div>`)}
+ const rows=[];const where=a=>a.custom?`${niceDate(a.date)} · Log`:`${niceDate(a.date)} B${a.b} W${a.w}`;
+ [...EX,...customExList(s)].forEach(x=>{const h=history(s,x);if(!h.length)return;
+  const tag=x.custom?'<span class="new">OWN</span>':"";
+  const wt=h.filter(a=>a.best);
+  if(wt.length){let hv=wt[0],he=wt[0];wt.forEach(a=>{if(a.best[0]>hv.best[0]||(a.best[0]==hv.best[0]&&a.best[1]>hv.best[1]))hv=a;if(a.e1>he.e1)he=a});
+   rows.push(`<div class="pb"><div><div class="nm">${esc(x.name)}${tag}</div><div class="meta">Heaviest ${fmt(hv.best[0])} kg × ${hv.best[1]} · ${where(hv)}</div></div><div class="r"><b>${fmt(he.e1)} kg</b><div class="meta">est. 1RM · ${he.custom?"Log":`B${he.b} W${he.w}`}</div></div></div>`)}
   else{let m=h[0];h.forEach(a=>{if(a.maxR>m.maxR)m=a});const u=x.kind=="s"?" s":x.kind=="m"?" min":" reps";
-   rows.push(`<div class="pb"><div><div class="nm">${esc(x.name)}</div><div class="meta">${niceDate(m.date)} B${m.b} W${m.w}</div></div><div class="r"><b>${m.maxR}${u}</b><div class="meta">best set</div></div></div>`)}});
+   rows.push(`<div class="pb"><div><div class="nm">${esc(x.name)}${tag}</div><div class="meta">${where(m)}</div></div><div class="r"><b>${m.maxR}${u}</b><div class="meta">best set</div></div></div>`)}});
  document.getElementById("pbs").innerHTML=rows.length?`<div class="pbs">${rows.join("")}</div>`:`<div class="empty" style="margin-top:0">🏆 Your personal bests will show here once you log some sets.</div>`;
 }
 
@@ -411,13 +479,158 @@ document.getElementById("lnkSave").onclick=()=>{const p=parseSpotify(document.ge
 document.getElementById("lnkDef").onclick=()=>{const s=st();s.music=null;save(s);const e=document.getElementById("lnkErr");e.className="err ok";e.textContent="Back to Beast Mode ✓";renderMusic()};
 window.addEventListener("online",()=>{if(st().tab=="music"){embedKey="";renderMusic()}});
 
+/* ---------- LOG (his own workouts) ---------- */
+let D=null,logMsg="";
+const CARDIO=["Bike","Run","Walk","Treadmill","Rower","Elliptical","Stairs","Swim","Other"];
+function kindOf(s,name){const p=EX.find(x=>norm(x.name)==norm(name));if(p)return p.kind;const c=customExList(s).find(x=>norm(x.name)==norm(name));return c?c.kind:"w"}
+function isPlanName(name){return EX.some(x=>norm(x.name)==norm(name))}
+function allNames(s){const seen=new Set(),out=[];
+ // his own (most recent first), then plan exercises
+ (s.custom||[]).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).forEach(w=>(w.ex||[]).forEach(e=>{const n=norm(e.name);if(n&&!seen.has(n)){seen.add(n);out.push({name:e.name.trim(),plan:isPlanName(e.name)})}}));
+ EX.forEach(x=>{const n=norm(x.name);if(!seen.has(n)){seen.add(n);out.push({name:x.name,plan:true})}});return out}
+function newDraft(){const s=st();return{id:null,date:today(),name:"",dur:"",notes:"",link:"extra",lb:s.block,lw:s.week,ex:[],cardio:[]}}
+function saveDraft(){const s=st();s.draft=D;save(s)}
+function wVolume(w){let v=0;(w.ex||[]).forEach(e=>cleanSets(e.sets,e.kind).forEach(([kg,r])=>{if(kg)v+=kg*r}));return v}
+function longDate(d){if(!d)return"";const [y,m,dd]=d.split("-").map(Number);const dt=new Date(y,m-1,dd);return dt.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"})}
+// most recent previous sets for an exercise, from plan logs or other Log-tab sessions
+function lastSetsFor(s,name){
+ const x=EX.find(x=>norm(x.name)==norm(name))||{name,di:null,kind:kindOf(s,name)};
+ const filled=D&&D.id?((s.custom||[]).find(w=>w.id==D.id)||{}).filled||{}:{};
+ let h=history(s,x).filter(a=>!(a.custom&&D&&a.wid==D.id)&&!(a.k&&filled[a.k]));
+ if(D&&D.date)h=h.filter(a=>!a.date||a.date<=D.date);
+ h.sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))||a.idx-b.idx);
+ return h.length?h[h.length-1]:null}
+function suggestDay(){if(!D||!D.ex.length)return null;let best=null;
+ plan.forEach((d,di)=>{const n=new Set(D.ex.map(e=>norm(e.name)));const c=d[1].filter(p=>n.has(norm(p[0]))).length;if(c&&(!best||c>best.c))best={di,c}});return best}
+function setRowsHTML(e,xi,last){const k=e.kind;let h='<div class="sets">';
+ e.sets.forEach((v,i)=>{const prev=(last&&last.sets[i])||(i>0?[numOrNull(e.sets[i-1][0]),numOrNull(e.sets[i-1][1])]:null)||(last&&last.sets[last.sets.length-1]);
+  const pk=prev&&prev[0]!=null?fmt(prev[0]):"kg",pr=prev&&prev[1]!=null?prev[1]:UNIT[k];
+  const rm=`<button class="rm" data-act="rmset" data-x="${xi}" data-i="${i}" aria-label="Remove set ${i+1}">✕</button>`;
+  if(k=="w")h+=`<div class="srow ed"><label>Set ${i+1}</label><div class="unitwrap"><input class="num" inputmode="decimal" data-x="${xi}" data-i="${i}" data-f="0" placeholder="${pk}" value="${esc(v[0]??"")}" aria-label="Set ${i+1} kg"><span>kg</span></div><span class="x">×</span><div class="unitwrap"><input class="num" inputmode="numeric" pattern="[0-9]*" data-x="${xi}" data-i="${i}" data-f="1" placeholder="${pr}" value="${esc(v[1]??"")}" aria-label="Set ${i+1} reps"><span>reps</span></div>${rm}</div>`;
+  else h+=`<div class="srow one ed"><label>Set ${i+1}</label><input class="num" inputmode="decimal" data-x="${xi}" data-i="${i}" data-f="1" placeholder="${pr}" value="${esc(v[1]??"")}" aria-label="Set ${i+1} ${UNIT[k]}"><span class="u">${UNIT[k]}</span>${rm}</div>`});
+ return h+'</div>'}
+function renderLog(){
+ const s=st(),el=document.getElementById("logBody");
+ if(!D){
+  const ws=(s.custom||[]).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.id).localeCompare(String(a.id)));
+  el.innerHTML=`<h1>Log</h1><div class="sub">Record any workout you've done, then link it to your plan or keep it as an extra session.</div>
+  ${logMsg?`<div class="toast">${esc(logMsg)}</div>`:""}
+  <button class="btn pri big" data-act="new">＋ Log a workout</button>
+  <h2>History</h2>`+(ws.length?ws.map(w=>{const v=wVolume(w),names=(w.ex||[]).map(e=>e.name),cd=(w.cardio||[]);
+   const tag=w.link?`${plan[w.link.di][0].split(" · ")[0]} · B${w.link.b} W${w.link.w}`:"Extra";
+   const meta=[longDate(w.date),w.dur?w.dur+" min":"",v?Math.round(v).toLocaleString("en-AU")+" kg":""].filter(Boolean).join(" · ");
+   const exs=[...names.slice(0,4),...(names.length>4?[`+${names.length-4} more`]:[]),...cd.map(c=>`${c.type} ${c.min?c.min+" min":""}${c.dist?" "+c.dist+" km":""}`.trim())].join(" · ");
+   return `<button class="wcard" data-act="open" data-id="${esc(w.id)}"><div class="wtop"><b>${esc(w.name||"Workout")}</b><span class="tag ${w.link?"lk":""}">${esc(tag)}</span></div><div class="meta">${esc(meta)}</div><div class="exs">${esc(exs||"No exercises")}</div></button>`}).join("")
+   :`<div class="empty" style="margin-top:0"><div class="big">🗒️</div><b>No workouts logged yet</b><br>Did a hotel-gym session or some extra arms? Tap <b>Log a workout</b> and it'll count toward your progress.</div>`);
+  return}
+ const editing=!!D.id,sug=suggestDay(),lb=D.lb||s.block,lw=D.lw||s.week,names=allNames(s);
+ let h=`<div class="edhead"><button class="back" data-act="cancel">‹ Back</button><b>${editing?"Edit workout":"New workout"}</b><span style="width:60px"></span></div>
+ <div class="form card">
+  <label class="fl">Date<input class="fld" type="date" data-d="date" value="${esc(D.date)}"></label>
+  <label class="fl">Name <span class="opt">optional</span><input class="fld" data-d="name" placeholder="e.g. Hotel gym, Extra arms" value="${esc(D.name)}" autocomplete="off"></label>
+  <label class="fl">Duration <span class="opt">minutes, optional</span><input class="fld" data-d="dur" inputmode="numeric" pattern="[0-9]*" placeholder="45" value="${esc(D.dur)}"></label>
+ </div>
+ <h2>Exercises</h2>`;
+ D.ex.forEach((e,xi)=>{const last=lastSetsFor(s,e.name),plan_=isPlanName(e.name);
+  h+=`<div class="excard"><div class="exhead"><div class="n">${esc(e.name)}${plan_?'<span class="new">PLAN</span>':""}</div><button class="link" data-act="rmex" data-x="${xi}">Remove</button></div>`+
+  (plan_?"":`<div class="seg">${[["w","kg × reps"],["b","reps"],["s","seconds"],["m","minutes"]].map(([k,l])=>`<button data-act="kind" data-x="${xi}" data-k="${k}" class="${e.kind==k?"on":""}">${l}</button>`).join("")}</div>`)+
+  (last?`<div class="last">Last time (${last.custom?niceDate(last.date)+" · Log":`B${last.b} W${last.w}`}): ${setsTxt(last.sets,e.kind)}</div>`:"")+
+  setRowsHTML(e,xi,last)+
+  `<div class="exbtns"><button data-act="addset" data-x="${xi}">＋ Set</button><button data-act="repeat" data-x="${xi}">Repeat last set</button><button data-act="copylast" data-x="${xi}" ${last?"":"disabled"}>Copy last time</button></div></div>`});
+ h+=`<div class="addex"><input class="fld" id="exName" placeholder="＋ Add exercise: start typing…" autocomplete="off" autocapitalize="words" enterkeyhint="done"><div id="sugg"></div></div>
+ <h2>Cardio</h2>`+D.cardio.map((c,ci)=>`<div class="crow"><select class="fld" data-c="${ci}" data-cf="type">${CARDIO.map(t=>`<option ${c.type==t?"selected":""}>${t}</option>`).join("")}</select><div class="unitwrap"><input class="num" inputmode="decimal" data-c="${ci}" data-cf="min" placeholder="20" value="${esc(c.min??"")}" aria-label="Minutes"><span>min</span></div><div class="unitwrap"><input class="num" inputmode="decimal" data-c="${ci}" data-cf="dist" placeholder="opt." value="${esc(c.dist??"")}" aria-label="Distance km"><span>km</span></div><button class="rm" data-act="rmcardio" data-c="${ci}" aria-label="Remove cardio">✕</button></div>`).join("")+
+ `<button class="btn" data-act="addcardio">＋ Quick-add cardio</button>
+ <h2>Notes</h2><textarea class="fld ta" data-d="notes" placeholder="How did it feel? Knee OK?">${esc(D.notes)}</textarea>
+ <h2>Counts as</h2>
+ <select class="fld" data-d="link"><option value="extra" ${D.link=="extra"?"selected":""}>Extra session (plan stays as is)</option>${plan.map((d,di)=>`<option value="${di}" ${String(D.link)==String(di)?"selected":""}>${esc(d[0])} · B${lb} W${lw}</option>`).join("")}</select>
+ ${sug&&String(D.link)!==String(sug.di)?`<div class="chip">💡 Looks like <b>${esc(plan[sug.di][0].split(" · ")[0])}</b> (${sug.c} matching exercise${sug.c>1?"s":""}). <button data-act="usesug" data-di="${sug.di}">Use it</button></div>`:""}
+ <div class="info">Linking fills this week's plan for exercises with the same name and ticks them. Anything you already logged there is only replaced if you say so.</div>
+ <button class="btn pri big" data-act="save">${editing?"Save changes":"Save workout"}</button>
+ ${editing?`<button class="btn danger" data-act="del">Delete workout</button>`:""}`;
+ el.innerHTML=h;
+ const sugBox=document.getElementById("sugg"),inp=document.getElementById("exName");
+ const showSug=()=>{const q=norm(inp.value);let list=names.filter(n=>!q||norm(n.name).includes(q)).slice(0,7);
+  let hh=list.map(n=>`<button data-act="addex" data-name="${esc(n.name)}">${esc(n.name)}${n.plan?'<span class="tg">plan</span>':'<span class="tg own">yours</span>'}</button>`).join("");
+  if(q&&!names.some(n=>norm(n.name)==q))hh+=`<button data-act="addex" data-name="${esc(inp.value.trim())}">＋ Add “${esc(inp.value.trim())}” as new exercise</button>`;
+  sugBox.innerHTML=hh;sugBox.classList.toggle("on",!!hh)};
+ inp.addEventListener("focus",showSug);inp.addEventListener("input",showSug);
+ inp.addEventListener("keydown",ev=>{if(ev.key=="Enter"&&inp.value.trim()){ev.preventDefault();addEx(inp.value.trim())}});
+}
+function addEx(name){const s=st(),m=allNames(s).find(n=>norm(n.name)==norm(name));name=m?m.name:name.replace(/\s+/g," ").trim();if(!name)return;
+ const kind=kindOf(s,name),last=lastSetsFor(s,name),n=last?last.sets.length:(kind=="m"?1:3);
+ D.ex.push({name,kind,sets:Array.from({length:n},()=>["",""])});saveDraft();renderLog();
+ const cards=document.querySelectorAll(".excard");const c=cards[cards.length-1];if(c)c.scrollIntoView({block:"center"})}
+// put a plan slot back the way it was before a Log-tab workout filled it
+function undoFill(s,k,f){if(f.prior&&f.prior.length){s.sets[k]=f.prior;if(f.pdate)s.dates[k]=f.pdate;else delete s.dates[k]}else{delete s.sets[k];delete s.dates[k]}if(f.tick)s.ticks[k]=true;else delete s.ticks[k]}
+function saveWorkout(){
+ const s=st();s.custom=s.custom||[];
+ const old=D.id?s.custom.find(w=>w.id==D.id):null,prevFilled=(old&&old.filled)||{};
+ const w={id:D.id||("w"+Date.now()),date:D.date||today(),name:(D.name||"").trim(),dur:numOrNull(D.dur),notes:(D.notes||"").trim(),
+  ex:D.ex.map(e=>({name:e.name.trim(),kind:e.kind,sets:cleanSets(e.sets,e.kind)})).filter(e=>e.name&&e.sets.length),
+  cardio:D.cardio.map(c=>({type:c.type||"Bike",min:numOrNull(c.min),dist:numOrNull(c.dist)})).filter(c=>c.min||c.dist),
+  b:D.lb||s.block,w:D.lw||s.week,link:null,filled:{}};
+ if(!w.ex.length&&!w.cardio.length){alert("Add at least one exercise with a set filled in, or a cardio entry.");return}
+ const fills=[];
+ if(D.link!=="extra"&&D.link!=null&&D.link!==""){const di=+D.link;w.link={b:w.b,w:w.w,di};const day=plan[di][1],used=new Set();
+  w.ex.forEach(e=>{const ei=day.findIndex(p=>norm(p[0])==norm(e.name));if(ei<0||used.has(ei))return;used.add(ei);
+   const k=`${w.b}-${w.w}-${di}-${ei}`,pk=exAt(di,ei).kind,sets=e.sets.map(a=>pk=="w"?a:[null,a[1]]);
+   const existing=setsOf(s,k),mine=prevFilled[k]&&JSON.stringify(prevFilled[k].sets)===JSON.stringify(setsOf(s,k));
+   fills.push({k,e,sets,conflict:existing.length>0&&!mine&&JSON.stringify(existing)!==JSON.stringify(sets)})})}
+ const conf=fills.filter(f=>f.conflict);let overwrite=false;
+ if(conf.length)overwrite=confirm(`You already logged ${conf.map(f=>f.e.name).join(", ")} for ${plan[w.link.di][0].split(" · ")[0]} (Block ${w.b} Week ${w.w}).\n\nReplace those sets with this workout's sets?\nOK = replace · Cancel = keep what's there`);
+ const apply=fills.filter(f=>!f.conflict||overwrite);
+ // undo earlier fills from this workout that no longer apply (only if untouched since)
+ for(const k in prevFilled){if(apply.some(f=>f.k==k))continue;if(JSON.stringify(setsOf(s,k))===JSON.stringify(prevFilled[k].sets))undoFill(s,k,prevFilled[k])}
+ apply.forEach(f=>{const pf=prevFilled[f.k],prior=pf?pf.tick:!!s.ticks[f.k],psets=pf?pf.prior:(s.sets[f.k]?s.sets[f.k]:null),pdate=pf?pf.pdate:(s.dates[f.k]||null);
+  s.sets[f.k]=f.sets;s.ticks[f.k]=true;s.dates[f.k]=w.date;w.filled[f.k]={sets:f.sets,tick:prior,prior:psets,pdate};f.e.pk=f.k});
+ if(old)s.custom[s.custom.indexOf(old)]=w;else s.custom.push(w);
+ delete s.draft;save(s);D=null;
+ logMsg=`Saved ✓`+(w.link?(apply.length?` Filled and ticked ${apply.length} exercise${apply.length>1?"s":""} in ${plan[w.link.di][0].split(" · ")[0]} (Week ${w.w}).`:` No exercises matched ${plan[w.link.di][0].split(" · ")[0]}.`)+(conf.length&&!overwrite?` Kept your existing sets for ${conf.length}.`:""):" Counted as an extra session.");
+ renderLog();window.scrollTo(0,0)}
+function deleteWorkout(){if(!D||!D.id)return;
+ if(!confirm("Delete this workout? Anything it filled into your plan will be undone."))return;
+ const s=st(),w=(s.custom||[]).find(x=>x.id==D.id);
+ if(w){for(const k in (w.filled||{})){if(JSON.stringify(setsOf(s,k))===JSON.stringify(w.filled[k].sets))undoFill(s,k,w.filled[k])}
+  s.custom=s.custom.filter(x=>x.id!=D.id)}
+ delete s.draft;save(s);D=null;logMsg="Workout deleted.";renderLog();window.scrollTo(0,0)}
+function openWorkout(id){const s=st(),w=(s.custom||[]).find(x=>x.id==id);if(!w)return;
+ D={id:w.id,date:w.date,name:w.name||"",dur:w.dur??"",notes:w.notes||"",link:w.link?String(w.link.di):"extra",lb:w.b,lw:w.w,
+  ex:w.ex.map(e=>({name:e.name,kind:e.kind,sets:e.sets.map(a=>[a[0]??"",a[1]??""])})),cardio:(w.cardio||[]).map(c=>({type:c.type,min:c.min??"",dist:c.dist??""}))};
+ logMsg="";saveDraft();renderLog();window.scrollTo(0,0)}
+(function(){const el=document.getElementById("logBody");
+ el.addEventListener("click",ev=>{const b=ev.target.closest("[data-act]");if(!b||b.disabled)return;const a=b.dataset.act,xi=+b.dataset.x;
+  if(a=="new"){D=newDraft();logMsg="";saveDraft();renderLog();window.scrollTo(0,0)}
+  else if(a=="open")openWorkout(b.dataset.id);
+  else if(a=="cancel"){if(!D.id&&(D.ex.length||D.cardio.length)&&!confirm("Discard this workout?"))return;D=null;const s=st();delete s.draft;save(s);logMsg="";renderLog();window.scrollTo(0,0)}
+  else if(a=="addex")addEx(b.dataset.name);
+  else if(a=="rmex"){if(D.ex[xi].sets.some(r=>r[0]!==""||r[1]!=="")&&!confirm(`Remove ${D.ex[xi].name}?`))return;D.ex.splice(xi,1);saveDraft();renderLog()}
+  else if(a=="kind"){D.ex[xi].kind=b.dataset.k;saveDraft();renderLog()}
+  else if(a=="addset"){D.ex[xi].sets.push(["",""]);saveDraft();renderLog()}
+  else if(a=="repeat"){const ss=D.ex[xi].sets,l=ss[ss.length-1];ss.push(l?[l[0],l[1]]:["",""]);saveDraft();renderLog()}
+  else if(a=="copylast"){const l=lastSetsFor(st(),D.ex[xi].name);if(l){D.ex[xi].sets=l.sets.map(r=>[r[0]??"",r[1]??""]);saveDraft();renderLog()}}
+  else if(a=="rmset"){D.ex[xi].sets.splice(+b.dataset.i,1);saveDraft();renderLog()}
+  else if(a=="addcardio"){D.cardio.push({type:"Bike",min:"",dist:""});saveDraft();renderLog()}
+  else if(a=="rmcardio"){D.cardio.splice(+b.dataset.c,1);saveDraft();renderLog()}
+  else if(a=="usesug"){D.link=String(b.dataset.di);saveDraft();renderLog()}
+  else if(a=="save")saveWorkout();
+  else if(a=="del")deleteWorkout()});
+ const onField=ev=>{const t=ev.target;if(!D)return;
+  if(t.dataset.d){D[t.dataset.d]=t.value;saveDraft();if(t.dataset.d=="link"&&ev.type=="change")renderLog();return}
+  if(t.dataset.x!=null&&t.dataset.f!=null){D.ex[+t.dataset.x].sets[+t.dataset.i][+t.dataset.f]=t.value;saveDraft();return}
+  if(t.dataset.c!=null&&t.dataset.cf){D.cardio[+t.dataset.c][t.dataset.cf]=t.value;saveDraft()}};
+ el.addEventListener("input",onField);el.addEventListener("change",onField);
+ el.addEventListener("keydown",ev=>{const t=ev.target;if(ev.key=="Enter"&&t.classList.contains("num")){ev.preventDefault();const all=[...el.querySelectorAll("input.num")];const n=all[all.indexOf(t)+1];if(n)n.focus();else t.blur()}});
+ document.addEventListener("click",ev=>{const sb=document.getElementById("sugg");if(sb&&!ev.target.closest(".addex"))sb.classList.remove("on")});
+})();
+
 /* ---------- TABS ---------- */
 function showTab(t){const s=st();s.tab=t;save(s);
  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id=="p-"+t));
  document.querySelectorAll(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.tab==t));
- if(t=="workouts")render();if(t=="progress")renderProgress();if(t=="music")renderMusic();window.scrollTo(0,0)}
+ if(t=="workouts")render();if(t=="progress")renderProgress();if(t=="music")renderMusic();if(t=="log")renderLog();window.scrollTo(0,0)}
 document.querySelectorAll(".tabbar button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 save(st()); // run migration once
-showTab(["workouts","progress","music"].includes(st().tab)?st().tab:"workouts");
+D=st().draft||null; // resume an unfinished Log-tab workout
+showTab(["workouts","log","progress","music"].includes(st().tab)?st().tab:"workouts");
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 </script></body></html>
