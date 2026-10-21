@@ -165,6 +165,18 @@ details.fit .info,details.xpd .info{padding-bottom:12px}
 .guide{background:var(--card);border-radius:14px;overflow:hidden}
 .gi{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-top:1px solid var(--line);font-size:13.5px;color:var(--mut);line-height:1.4}
 .gi:first-child{border-top:0}.gi b{color:var(--txt);font-size:14.5px}.gic{font-size:20px;flex:none;width:26px;text-align:center}.gi>div:nth-child(2){flex:1}.gch{color:var(--acc);font-size:22px;align-self:center}
+/* lift PRs / run */
+h3.sh{font-size:15px;margin:16px 0 8px;color:var(--mut)}
+.lifts{display:grid;gap:10px}.lift,.runbox{background:var(--card);border-radius:14px;padding:13px 14px}.runbox{margin-top:10px}
+.lh{display:flex;justify-content:space-between;align-items:baseline;font-size:15.5px}.lb{color:var(--acc);font-weight:800;font-size:16px}.lb.mut,.mut{color:var(--mut);font-weight:500;font-size:12px}
+.lm{font-size:13px;color:var(--mut);margin-top:5px;line-height:1.4}.lvlb{color:#ffd166;font-weight:700}.warnc{color:#ffd166}.okc{color:var(--acc)}
+.spark{width:100%;height:60px;margin-top:8px;display:block}
+.lhist div{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#c9ccd3;border-top:1px solid var(--line);margin-top:2px}.lhist .rm{height:36px}
+details.addlift{background:var(--card);border-radius:14px}details.addlift summary{font-size:14.5px;padding:13px 14px;color:var(--acc)}.alf{padding:0 14px 12px}.alf .fld{margin:0 0 8px}
+.goal{display:grid;grid-template-columns:44px 1fr 1fr;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:var(--mut);font-weight:600}
+.fitrow.me{grid-template-columns:1fr 1fr 130px}.bmi{font-size:12.5px;color:var(--mut);text-align:center}
+.tog.small{margin:0 0 8px;padding:10px 12px;font-size:13.5px;align-items:center}
+.crow.t24{grid-template-columns:44px 1fr 1fr 38px}
 </style></head><body>
 
 <!-- WORKOUTS -->
@@ -284,6 +296,17 @@ function migrate(s){
  s.custom=Array.isArray(s.custom)?s.custom:[];
  if(s.v<4){s.body=[];s.runs=[];s.v=4} // v4: bodyweight + 2.4 km runs for game stats
  s.body=Array.isArray(s.body)?s.body:[];s.runs=Array.isArray(s.runs)?s.runs:[];
+ if(s.v<5){s.lifts=[];s.me={};s.runGoal=600;s.v=5} // v5: lift PRs, height/age, run goal
+ s.lifts=Array.isArray(s.lifts)?s.lifts:[];s.me=s.me||{};s.runGoal=s.runGoal||600;
+ if(!s.seed1021){ // one-time: Michael's measured stats on 21 Oct 2026, only where nothing exists yet
+  const d="2026-10-21";
+  if(!s.body.length)s.body.push({id:"seed-bw",date:d,kg:79});
+  if(!s.me.height)s.me.height=178;if(!s.me.age)s.me.age=22;
+  if(!s.lifts.some(e=>/bench/i.test(e.lift)&&!/incline/i.test(e.lift)))s.lifts.push({id:"seed-bench",lift:"Bench",kg:100,reps:2,date:d});
+  if(!s.lifts.some(e=>/deadlift/i.test(e.lift)&&!/romanian|rdl/i.test(e.lift)))s.lifts.push({id:"seed-dl",lift:"Deadlift",kg:160,reps:1,date:d});
+  if(!s.runs.length)s.runs.push({id:"seed-run",date:d,secs:640});
+  s.seed1021=true;s.game=null; // re-baseline the game silently so seeded badges don't fire celebrations
+ }
  return s;}
 function st(){let s;try{s=JSON.parse(localStorage.getItem(K))}catch(e){s=null}return migrate(s)}
 function save(s){localStorage.setItem(K,JSON.stringify(s))}
@@ -440,7 +463,7 @@ function exFromVal(s,v){if(String(v).startsWith("c:")){const n=v.slice(2);return
 function renderProgress(keepOpen){
  const s=st(),S=stats(s),G=checkGame();
  const fitOpen=keepOpen||!!document.querySelector("details.fit[open]");
- document.getElementById("gstats").innerHTML=`<h2>Your stats</h2>`+statBars(G)+fitnessHTML(s,G)+xpBreakdown(G)+`<h2>Guidance</h2>`+guidanceHTML(s,G);if(fitOpen)document.querySelector("details.fit").open=true;bindFitness();
+ document.getElementById("gstats").innerHTML=`<h2>Your stats</h2>`+statBars(G)+`<h3 class="sh">Lift PRs</h3>`+liftsHTML(s,G)+runHTML(s,G)+fitnessHTML(s,G)+xpBreakdown(G)+`<h2>Guidance</h2>`+guidanceHTML(s,G);if(fitOpen)document.querySelector("details.fit").open=true;bindFitness();bindLifts();bindRun();bindBody();
  document.getElementById("badges").innerHTML=badgesHTML(G);
  document.getElementById("psub").textContent=`Block ${s.block} · Week ${s.week} (${WEEKS[s.week-1]})`;
  const diff=S.thisV-S.lastV,dp=S.lastV?Math.round(diff/S.lastV*100):null;
@@ -556,7 +579,7 @@ function rankOf(L){let r=RANKS[0];RANKS.forEach(x=>{if(L>=x[0])r=x});return{name
 const fmtTime=s=>`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
 const latestBW=s=>{const b=(s.body||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));return b.length?b[b.length-1].kg:null};
 // heaviest set + best e1RM across plan and Log-tab exercises whose name matches
-function liftBest(s,test){let kg=0,e1=0,at=null;[...EX,...customExList(s)].filter(x=>test(norm(x.name))).forEach(x=>history(s,x).forEach(h=>{if(h.best&&h.best[0]>kg){kg=h.best[0];at=h}if(h.e1>e1)e1=h.e1}));return{kg,e1,at}}
+function liftBest(s,test){let kg=0,e1=0,at=null;(s.lifts||[]).filter(e=>test(norm(e.lift))).forEach(e=>{if(e.kg>kg){kg=e.kg;at=e}e1=Math.max(e1,epley(e.kg,e.reps))});[...EX,...customExList(s)].filter(x=>test(norm(x.name))).forEach(x=>history(s,x).forEach(h=>{if(h.best&&h.best[0]>kg){kg=h.best[0];at=h}if(h.e1>e1)e1=h.e1}));return{kg,e1,at}}
 const isBench=n=>/bench/.test(n)&&!/incline|decline|dumbbell|\bdb\b/.test(n);
 const isDead=n=>/deadlift/.test(n)&&!/romanian|rdl|stiff/.test(n);
 function game(s){
@@ -573,6 +596,7 @@ function game(s){
  const prs=[];[...EX,...customExList(s)].forEach(x=>{let best=null;history(s,x).forEach(h=>{const v=x.kind=="w"?(h.best?h.best[0]:0):h.maxR; // lift PR = new heaviest weight; bodyweight/timed = more reps/timeif(!v)return;
   if(best!=null&&v>best+1e-9)prs.push({name:x.name,idx:h.idx,date:h.date||"",txt:x.kind=="w"&&h.best?`${fmt(h.best[0])} kg × ${h.best[1]}`:`${h.maxR}${x.kind=="s"?" s":x.kind=="m"?" min":" reps"}`});
   best=best==null?v:Math.max(best,v)})});
+ liftGroups(s).forEach(v=>{let b=null;v.entries.forEach(e=>{if(b!=null&&e.kg>b)prs.push({name:v.name+" PR",idx:9998,date:e.date,txt:`${fmt(e.kg)} kg × ${e.reps}`});b=b==null?e.kg:Math.max(b,e.kg)})});
  const runs=(s.runs||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));let rb=null;
  runs.forEach(r=>{if(rb!=null&&r.secs<rb)prs.push({name:"2.4 km run",idx:9999,date:r.date,txt:fmtTime(r.secs)});rb=rb==null?r.secs:Math.min(rb,r.secs)});
  // streaks (program weeks)
@@ -629,12 +653,62 @@ function badgesHTML(G){const n=G.badges.filter(b=>b.earned).length;
  return `<div class="bhead">${n} / ${G.badges.length} earned</div><div class="badges">`+G.badges.map(b=>`<div class="badge ${b.earned?"on":""}"><div class="bi">${b.icon}</div><div class="bn">${esc(b.name)}</div><div class="br">${b.earned?"Earned":esc(b.req)+(b.prog?`<br><span>${esc(b.prog)}</span>`:"")}</div></div>`).join("")+`</div>`}
 function xpBreakdown(G){const L=[["Sets logged",G.br.sets],["Plan days done",G.br.days],["Full weeks",G.br.weeks],["Full blocks",G.br.blocks],["PRs",G.br.prs],["Logged workouts",G.br.workouts],["Streak bonus",G.br.streak]];
  return `<details class="xpd"><summary>How you earned ${G.xp.toLocaleString("en-AU")} XP</summary>${L.map(([k,v])=>`<div><span>${k}</span><b>${v.toLocaleString("en-AU")}</b></div>`).join("")}<div class="info">+10 per set · +50 per plan day · +100 per full week · +250 per full block · +100 per PR · +25 per logged workout · streak bonus grows each week in a row.</div></details>`}
+/* ---------- STATS: lift PRs, body, run (v5) ---------- */
+const SEED_DATE="2026-10-21";
+const roundTo=(x,inc)=>{const i=inc>=2.5?2.5:inc>=2?2:1;return Math.max(i,Math.round(x/i)*i)};
+const epley=(kg,r)=>r<=1?kg:kg*(1+r/30),brzycki=(kg,r)=>r<=1?kg:kg*36/(37-r);
+function e1Range(kg,r){const a=epley(kg,r);if(r>10)return{lo:a,hi:a,mid:a};const b=brzycki(kg,r);return{lo:Math.min(a,b),hi:Math.max(a,b),mid:(a+b)/2}}
+const LEVELS={bench:[[0.75,"Beginner"],[1.25,"Novice–intermediate"],[1.5,"Intermediate–advanced"],[2,"Advanced"],[1e9,"Elite"]],
+ deadlift:[[1.25,"Beginner"],[1.75,"Novice–intermediate"],[2.25,"Intermediate–advanced"],[2.75,"Advanced"],[1e9,"Elite"]]};
+const liftKey=n=>isBench(norm(n))?"bench":isDead(norm(n))?"deadlift":norm(n);
+const levelLabel=(key,ratio)=>{const L=LEVELS[key];return L?L.find(x=>ratio<x[0])[1]:""};
+function liftGroups(s){const g=new Map([["bench",{name:"Bench",entries:[]}],["deadlift",{name:"Deadlift",entries:[]}]]);
+ (s.lifts||[]).forEach(e=>{const k=liftKey(e.lift);if(!g.has(k))g.set(k,{name:e.lift,entries:[]});g.get(k).entries.push(e)});
+ g.forEach(v=>v.entries.sort((a,b)=>String(a.date).localeCompare(String(b.date))));return g}
+// best set from training logs (plan + Log tab) for a lift group, to suggest a new PR
+function loggedBest(s,key){let best=null;[...EX,...customExList(s)].filter(x=>liftKey(x.name)==key&&x.kind=="w").forEach(x=>history(s,x).forEach(h=>h.sets.forEach(([kg,r])=>{if(kg&&r&&r<=12){const v=epley(kg,r);if(!best||v>best.e1)best={kg,r,e1:v,date:h.date||today()}}})));return best}
+function sparkSVG(pts){if(!pts.length)return"";const W=300,H=70,P=8,xs=pts.map((_,i)=>i),ys=pts.map(p=>p.v);let mn=Math.min(...ys),mx=Math.max(...ys);if(mn==mx){mn-=5;mx+=5}
+ const X=i=>pts.length==1?W/2:P+i*(W-2*P)/(pts.length-1),Y=v=>H-P-(v-mn)/(mx-mn)*(H-2*P);
+ return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="e1RM history">`+(pts.length>1?`<path d="${pts.map((p,i)=>(i?"L":"M")+X(i)+" "+Y(p.v)).join("")}" fill="none" stroke="#4ef0b4" stroke-width="2.2" vector-effect="non-scaling-stroke"/>`:"")+pts.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.v)}" r="3.4" fill="#4ef0b4"/>`).join("")+`</svg>`}
+function liftsHTML(s,G){const bw=G.bw,g=liftGroups(s);let h=`<div class="lifts">`;
+ g.forEach((v,key)=>{const best=v.entries.reduce((a,e)=>!a||epley(e.kg,e.reps)>epley(a.kg,a.reps)?e:a,null);
+  const sug=loggedBest(s,key),sugBetter=sug&&(!best||sug.e1>epley(best.kg,best.reps)+0.5);
+  h+=`<div class="lift"><div class="lh"><b>${esc(v.name)}</b>${best?`<span class="lb">${fmt(best.kg)} kg × ${best.reps}</span>`:`<span class="lb mut">no PR yet</span>`}</div>`;
+  if(best){const r=e1Range(best.kg,best.reps),ratio=bw?epley(best.kg,best.reps)/bw:null,lab=ratio?levelLabel(key,ratio):"";
+   h+=`<div class="lm">${niceDate(best.date)} · est. 1RM ${r.hi-r.lo<0.6?fmt(r1(r.mid))+" kg":`${fmt(r1(r.lo))}–${fmt(r1(r.hi))} kg`}${ratio?` · ${fmt(Math.round(ratio*100)/100)}× BW`:""}${lab?` · <span class="lvlb">${lab}</span>`:""}</div>`+
+    (v.entries.length>1?sparkSVG(v.entries.map(e=>({v:epley(e.kg,e.reps)}))):"")+
+    `<div class="lhist">${v.entries.slice().reverse().slice(0,4).map(e=>`<div><span>${niceDate(e.date)} · ${fmt(e.kg)} kg × ${e.reps}</span><button class="rm" data-ldel="${esc(e.id)}" aria-label="Delete">✕</button></div>`).join("")}</div>`}
+  if(sugBetter)h+=`<div class="chip"><span>🏆 Your training log has ${fmt(sug.kg)} kg × ${sug.r} (est. ${fmt(r1(sug.e1))} kg). That beats this PR.</span><button data-lsug="${esc(v.name)}" data-kg="${sug.kg}" data-r="${sug.r}" data-d="${esc(sug.date)}">Add PR</button></div>`;
+  h+=`</div>`});
+ h+=`<details class="addlift"><summary>＋ Add a lift PR</summary><div class="alf"><input class="fld" id="lName" list="lNames" placeholder="Lift (e.g. Bench, Deadlift, Overhead press)" autocapitalize="words"><datalist id="lNames">${[...g.values()].map(v=>`<option value="${esc(v.name)}">`).join("")}</datalist>
+  <div class="fitrow run"><div class="unitwrap"><input class="num" id="lKg" inputmode="decimal" placeholder="100"><span>kg</span></div><div class="unitwrap"><input class="num" id="lReps" inputmode="numeric" pattern="[0-9]*" placeholder="2"><span>reps</span></div><input class="fld" id="lDate" type="date" value="${today()}" style="margin:0"></div>
+  <button class="btn pri" id="lSave">Save PR</button></div></details></div>`;
+ return h}
+function bindLifts(){const q=id=>document.getElementById(id);
+ if(q("lSave"))q("lSave").onclick=()=>{const n=(q("lName").value||"").trim(),kg=numOrNull(q("lKg").value),r=numOrNull(q("lReps").value);
+  if(!n||!kg||!r||r<1||r>30){alert("Enter the lift name, weight and reps.");return}if(/squat/i.test(n)&&!confirm("Add a squat PR?"))return;
+  const s=st();s.lifts.push({id:"l"+Date.now(),lift:n.replace(/\b([a-z])/g,c=>c.toUpperCase()),kg,reps:Math.round(r),date:q("lDate").value||today()});save(s);renderProgress(true)};
+ document.querySelectorAll("[data-ldel]").forEach(b=>b.onclick=()=>{if(!confirm("Delete this PR entry?"))return;const s=st();s.lifts=s.lifts.filter(x=>x.id!=b.dataset.ldel);save(s);renderProgress(true)});
+ document.querySelectorAll("[data-lsug]").forEach(b=>b.onclick=()=>{const s=st();s.lifts.push({id:"l"+Date.now(),lift:b.dataset.lsug,kg:+b.dataset.kg,reps:+b.dataset.r,date:b.dataset.d||today()});save(s);renderProgress(true)})}
+function runHTML(s,G){if(!G.bestRun)return"";const best=G.bestRun,goal=s.runGoal||600,pace=best/2.4,gp=goal/2.4,gap=best-goal;
+ return `<div class="runbox"><div class="lh"><b>🏃 2.4 km run</b><span class="lb">${fmtTime(best)}</span></div>
+ <div class="lm">${fmtTime(pace)}/km · VO₂max ≈ ${Math.round(G.vo2)} <span class="mut">(estimate, Cooper: 483 ÷ minutes + 3.5)</span></div>
+ <div class="goal"><span>Goal</span><div class="unitwrap"><input class="num" id="gM" inputmode="numeric" pattern="[0-9]*" value="${Math.floor(goal/60)}"><span>min</span></div><div class="unitwrap"><input class="num" id="gS" inputmode="numeric" pattern="[0-9]*" value="${String(goal%60).padStart(2,"0")}"><span>sec</span></div></div>
+ <div class="lm">${gap>0?`<b class="warnc">${fmtTime(gap)} to go</b> · needs ${fmtTime(gp)}/km (you ran ${fmtTime(pace)}/km)`:`<b class="okc">Goal reached</b> by ${fmtTime(-gap)} · set a new one`}</div></div>`}
+function bindRun(){const m=document.getElementById("gM"),sc=document.getElementById("gS");if(!m)return;
+ const f=()=>{const t=(numOrNull(m.value)||0)*60+(numOrNull(sc.value)||0);if(t>=300&&t<=3600){const s=st();s.runGoal=t;save(s);renderProgress(true)}};m.onchange=f;sc.onchange=f}
+function bodyExtraHTML(s,G){const me=s.me||{},bmi=G.bw&&me.height?G.bw/((me.height/100)**2):null;
+ return `<div class="fitrow run me"><div class="unitwrap"><input class="num" id="mH" inputmode="numeric" pattern="[0-9]*" value="${esc(me.height||"")}" placeholder="cm" aria-label="Height cm"><span>cm</span></div><div class="unitwrap"><input class="num" id="mA" inputmode="numeric" pattern="[0-9]*" value="${esc(me.age||"")}" placeholder="age" aria-label="Age"><span>yrs</span></div><div class="bmi">${bmi?`BMI ${fmt(Math.round(bmi*10)/10)}`:""}</div></div>`}
+function bindBody(){const h=document.getElementById("mH"),a=document.getElementById("mA");if(!h)return;
+ const f=()=>{const s=st();s.me=s.me||{};const hv=numOrNull(h.value),av=numOrNull(a.value);if(hv&&hv>100&&hv<250)s.me.height=hv;if(av&&av>10&&av<100)s.me.age=av;save(s);renderProgress(true)};h.onchange=f;a.onchange=f}
+
 function fitnessHTML(s,G){const body=(s.body||[]).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))),runs=(s.runs||[]).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
  return `<details class="fit"><summary><span>⚖️ Bodyweight &amp; 🏃 2.4 km run</span><span class="fs">${G.bw?fmt(G.bw)+" kg":"–"} · ${G.bestRun?fmtTime(G.bestRun):"–"}</span></summary>
  <div class="fitrow"><div class="unitwrap"><input class="num" id="bwIn" inputmode="decimal" placeholder="${G.bw||"kg"}" aria-label="Bodyweight kg"><span>kg</span></div><button class="btn pri" id="bwSave">Save weight</button></div>
+ ${bodyExtraHTML(s,G)}
  <div class="fitrow run"><div class="unitwrap"><input class="num" id="runM" inputmode="numeric" pattern="[0-9]*" placeholder="10" aria-label="Minutes"><span>min</span></div><div class="unitwrap"><input class="num" id="runS" inputmode="numeric" pattern="[0-9]*" placeholder="30" aria-label="Seconds"><span>sec</span></div><button class="btn pri" id="runSave">Save run</button></div>
  <div class="fitlist">${body.slice(0,4).map(b=>`<div><span>${niceDate(b.date)} · ${fmt(b.kg)} kg</span><button class="rm" data-fdel="body" data-id="${esc(b.id)}" aria-label="Delete">✕</button></div>`).join("")}${runs.slice(0,4).map(r=>`<div><span>${niceDate(r.date)} · 2.4 km in ${fmtTime(r.secs)}</span><button class="rm" data-fdel="runs" data-id="${esc(r.id)}" aria-label="Delete">✕</button></div>`).join("")}</div>
- <div class="info">Bodyweight is used for the strength ratios and badges. The 2.4 km time gives an estimated VO₂max for Endurance.</div></details>`}
+ <div class="info">Bodyweight is used for the strength ratios and badges. Height and age are just for reference. The 2.4 km time gives an estimated VO₂max for Endurance.</div></details>`}
 function bindFitness(){const q=id=>document.getElementById(id);if(!q("bwSave"))return;
  q("bwSave").onclick=()=>{const v=numOrNull(q("bwIn").value);if(!v||v<30||v>300){alert("Enter your bodyweight in kg.");return}const s=st();s.body=s.body||[];s.body.push({id:"b"+Date.now(),date:today(),kg:v});save(s);renderProgress(true)};
  q("runSave").onclick=()=>{const m=numOrNull(q("runM").value)||0,sc=numOrNull(q("runS").value)||0,t=m*60+sc;if(t<300||t>3600){alert("Enter your 2.4 km time, e.g. 10 min 30 sec.");return}const s=st();s.runs=s.runs||[];s.runs.push({id:"r"+Date.now(),date:today(),secs:t});save(s);renderProgress(true)};
@@ -649,20 +723,30 @@ function guidanceHTML(s,G){const out=[],b=s.block,w=s.week;
  // stalled lifts: last two logged weeks both short of the target reps
  EX.filter(x=>x.kind=="w").forEach(x=>{const h=history(s,x).filter(a=>!a.custom&&a.best).slice(-2);if(h.length<2)return;
   const miss=h.every(a=>{const t=tnum(x.e,a.w,a.b);return Math.min(...a.sets.map(r=>r[1]))<t.reps});
-  if(miss&&out.length<5)out.push(["🔁",`${esc(x.name)}: stay put`,`You've been short of the target reps twice. Repeat ${fmt(h[1].best[0])} kg until you hit every rep, then move up.`])});
+  if(miss&&out.length<6)out.push(["🔁",`${esc(x.name)}: stay put`,`You've been short of the target reps twice. Repeat ${fmt(h[1].best[0])} kg until you hit every rep, then move up.`])});
+ const bw=G.bw,benchE1=G.bench.e1,deadE1=G.dead.e1;
+ const bx=EX.find(x=>x.name=="Bench Press (Barbell)"),bt=tnum(bx.e,w,b);
+ if(benchE1&&bt.kg){const pct=bt.kg/benchE1*100;
+  out.push(pct>85?["⚠️",`Bench ${fmt(bt.kg)} kg is ${Math.round(pct)}% of your max`,`That's heavy for ${bt.reps} reps. Above ~85% of your est. 1RM (${fmt(r1(benchE1))} kg) is closer to strength work. Stay at this weight until every rep is clean, or drop a step.`]
+   :["✅",`Bench ${fmt(bt.kg)} kg ≈ ${Math.round(pct)}% of your max`,`About 75% of your est. 1RM (${fmt(r1(benchE1))} kg) is right for 6–8 reps of muscle-building work.`])}
+ const rx=EX.find(x=>x.name=="Romanian Deadlift (Barbell)"),rt=tnum(rx.e,w,b);
+ if(deadE1&&rt.kg)out.push(["🏋️",`RDL ${fmt(rt.kg)} kg ≈ ${Math.round(rt.kg/deadE1*100)}% of your deadlift`,`Good for hypertrophy. Optional: a heavy deadlift single every 2 weeks at ~90% (≈${fmt(roundTo(deadE1*0.9,2.5))} kg) after RDLs, only if your back and knee feel good.`]);
+ if(G.bestRun){const goal=s.runGoal||600,gp=goal/2.4,lo=Math.max(gp-10,200),hi=gp-5;const lastRun=(s.runs||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))).pop();
+  const due=new Date(lastRun.date+"T00:00");due.setDate(due.getDate()+28);const dueIso=due.toISOString().slice(0,10),over=dueIso<=today();
+  out.push(["🏃","Knee-friendly running block",`<b>Intervals:</b> 6 × 400 m at ${fmtTime(lo)}–${fmtTime(hi)}/km (${fmtTime(lo*0.4)}–${fmtTime(hi*0.4)} per 400 m), 90 s walk between. Add a rep each week up to 8.<br><b>Easy run:</b> 20–30 min at a pace you can talk at. If your knee is fine, swap Day 2's bike for this run.<br><b>Retest 2.4 km</b> every 4–6 weeks${over?`. <b class="warnc">A retest is due now</b>`:`, next around ${niceDate(dueIso)}`}. Log it on the Log tab as Run → 2.4 km test.`])}
  const lock=G.badges.filter(b=>!b.earned&&/\d+\/\d+/.test(b.prog)).map(b=>{const m=b.prog.match(/(\d+)\/(\d+)/);return{b,r:m[1]/m[2]}}).sort((a,b)=>b.r-a.r)[0];
  if(lock)out.push([lock.b.icon,`Closest badge: ${esc(lock.b.name)}`,`${esc(lock.b.req)} (${esc(lock.b.prog)}).`]);
  out.push(["⬆️",`${(G.need-G.into).toLocaleString("en-AU")} XP to level ${G.level+1}`,`About ${Math.ceil((G.need-G.into)/XPR.set)} logged sets, or finish a day (+${XPR.day}) and beat a PR (+${XPR.pr}).`]);
  if(!G.bw)out.push(["⚖️","Add your bodyweight","Unlocks the Strength bar and the bodyweight badges. Open “Bodyweight & 2.4 km run” above."]);
  else if(!G.bestRun)out.push(["🏃","Do a 2.4 km time trial","Log the time above to unlock the Endurance bar."]);
- return `<div class="guide">`+out.slice(0,5).map(([i,t,d,tab])=>`<div class="gi" ${tab?`role="button" onclick="showTab('${tab}')"`:""}><div class="gic">${i}</div><div><b>${t}</b><div>${d}</div></div>${tab?'<span class="gch">›</span>':""}</div>`).join("")+`</div>`}
+ return `<div class="guide">`+out.slice(0,9).map(([i,t,d,tab])=>`<div class="gi" ${tab?`role="button" onclick="showTab('${tab}')"`:""}><div class="gic">${i}</div><div><b>${t}</b><div>${d}</div></div>${tab?'<span class="gch">›</span>':""}</div>`).join("")+`</div>`}
 
 /* celebrations: toast + CSS confetti + light haptics, only for things that are new since last time */
 let toastQ=[],toastBusy=false;
 function celebrate(msg,big){toastQ.push([msg,big]);if(!toastBusy)nextToast()}
 function nextToast(){const it=toastQ.shift();if(!it){toastBusy=false;return}toastBusy=true;const [msg,big]=it;
  const t=document.getElementById("gtoast");t.innerHTML=msg;t.classList.remove("on");void t.offsetWidth;t.classList.add("on");
- try{navigator.vibrate&&navigator.vibrate(big?[20,60,20]:15)}catch(e){}
+ try{navigator.vibrate&&(!navigator.userActivation||navigator.userActivation.hasBeenActive)&&navigator.vibrate(big?[20,60,20]:15)}catch(e){}
  if(big&&!matchMedia("(prefers-reduced-motion: reduce)").matches){const c=document.getElementById("confetti");c.innerHTML="";
   const cols=["#4ef0b4","#ffd166","#8ab8ff","#ff7b9c","#f2f3f5"];
   for(let i=0;i<36;i++){const p=document.createElement("i");p.style.cssText=`left:${Math.random()*100}%;background:${cols[i%cols.length]};animation-delay:${Math.random()*.25}s;--dx:${(Math.random()*2-1)*80}px;--r:${Math.random()*720-360}deg;width:${6+Math.random()*5}px;height:${8+Math.random()*8}px`;c.appendChild(p)}
@@ -671,6 +755,7 @@ function nextToast(){const it=toastQ.shift();if(!it){toastBusy=false;return}toas
  setTimeout(()=>{t.classList.remove("on");setTimeout(nextToast,350)},2600)}
 function checkGame(){const s=st(),G=game(s),prev=s.game;
  const now={level:G.level,badges:G.badges.filter(b=>b.earned).map(b=>b.id),prs:G.prs.length};
+ if(prev&&prev.badges)prev.badges.forEach(id=>{if(!now.badges.includes(id))now.badges.push(id)}); // badges stay earned once unlocked
  if(prev){ // first run just records a baseline so past progress doesn't fire a pile of celebrations
   if(now.prs>prev.prs){const last=G.prs.slice().sort((a,b)=>(a.idx-b.idx)||String(a.date).localeCompare(String(b.date))).pop();celebrate(`🏆 <b>New PR!</b> ${esc(last.name)} · ${esc(last.txt)} <span class="tx">+${XPR.pr} XP</span>`,true)}
   now.badges.filter(id=>!prev.badges.includes(id)).forEach(id=>{const b=G.badges.find(x=>x.id==id);celebrate(`${b.icon} <b>Badge unlocked:</b> ${esc(b.name)}`,true)});
@@ -755,7 +840,8 @@ Leg Curl 70kg x 12, 12, 10"></textarea><button class="btn pri" data-act="parsepa
   setRowsHTML(e,xi,last)+
   `<div class="exbtns"><button data-act="addset" data-x="${xi}">＋ Set</button><button data-act="repeat" data-x="${xi}">Repeat last set</button><button data-act="copylast" data-x="${xi}" ${last?"":"disabled"}>Copy last time</button></div></div>`});
  h+=`<div class="addex"><input class="fld" id="exName" placeholder="＋ Add exercise: start typing…" autocomplete="off" autocapitalize="words" enterkeyhint="done"><div id="sugg"></div></div>
- <h2>Cardio</h2>`+D.cardio.map((c,ci)=>`<div class="crow"><select class="fld" data-c="${ci}" data-cf="type">${CARDIO.map(t=>`<option ${c.type==t?"selected":""}>${t}</option>`).join("")}</select><div class="unitwrap"><input class="num" inputmode="decimal" data-c="${ci}" data-cf="min" placeholder="20" value="${esc(c.min??"")}" aria-label="Minutes"><span>min</span></div><div class="unitwrap"><input class="num" inputmode="decimal" data-c="${ci}" data-cf="dist" placeholder="opt." value="${esc(c.dist??"")}" aria-label="Distance km"><span>km</span></div><button class="rm" data-act="rmcardio" data-c="${ci}" aria-label="Remove cardio">✕</button></div>`).join("")+
+ <h2>Cardio</h2>`+D.cardio.map((c,ci)=>`<div class="crow"><select class="fld" data-c="${ci}" data-cf="type">${CARDIO.map(t=>`<option ${c.type==t?"selected":""}>${t}</option>`).join("")}</select><div class="unitwrap"><input class="num" inputmode="decimal" data-c="${ci}" data-cf="min" placeholder="20" value="${esc(c.min??"")}" aria-label="Minutes"><span>min</span></div><div class="unitwrap"><input class="num" inputmode="decimal" data-c="${ci}" data-cf="dist" placeholder="opt." value="${esc(c.dist??"")}" aria-label="Distance km"><span>km</span></div><button class="rm" data-act="rmcardio" data-c="${ci}" aria-label="Remove cardio">✕</button></div>`+
+  (c.type=="Run"?`<label class="tog small"><input type="checkbox" data-c="${ci}" data-cf="test" ${c.test?"checked":""}><span><b>2.4 km test</b> · saves to your run stats</span></label>`+(c.test?`<div class="crow t24"><span class="u">Time</span><div class="unitwrap"><input class="num" inputmode="numeric" pattern="[0-9]*" data-c="${ci}" data-cf="min" placeholder="10" value="${esc(c.min??"")}" aria-label="Minutes"><span>min</span></div><div class="unitwrap"><input class="num" inputmode="numeric" pattern="[0-9]*" data-c="${ci}" data-cf="sec" placeholder="30" value="${esc(c.sec??"")}" aria-label="Seconds"><span>sec</span></div><span></span></div>`:""):"")).join("")+
  `<button class="btn" data-act="addcardio">＋ Quick-add cardio</button>
  <h2>Notes</h2><textarea class="fld ta" data-d="notes" placeholder="How did it feel? Knee OK?">${esc(D.notes)}</textarea>
  <h2>Counts as</h2>
@@ -784,7 +870,7 @@ function saveWorkout(){
  const old=D.id?s.custom.find(w=>w.id==D.id):null,prevFilled=(old&&old.filled)||{};
  const w={id:D.id||("w"+Date.now()),date:D.date||today(),name:(D.name||"").trim(),dur:numOrNull(D.dur),notes:(D.notes||"").trim(),
   ex:D.ex.map(e=>({name:e.name.trim(),kind:e.kind,sets:cleanSets(e.sets,e.kind)})).filter(e=>e.name&&e.sets.length),
-  cardio:D.cardio.map(c=>({type:c.type||"Bike",min:numOrNull(c.min),dist:numOrNull(c.dist)})).filter(c=>c.min||c.dist),
+  cardio:D.cardio.map(c=>{const o={type:c.type||"Bike",min:numOrNull(c.min),dist:numOrNull(c.dist)};if(o.type=="Run"&&c.test){o.test=true;o.sec=numOrNull(c.sec)||0;o.dist=2.4}return o}).filter(c=>c.min||c.dist),
   b:D.lb||s.block,w:D.lw||s.week,link:null,filled:{}};
  if(!w.ex.length&&!w.cardio.length){alert("Add at least one exercise with a set filled in, or a cardio entry.");return}
  const fills=[];
@@ -800,6 +886,8 @@ function saveWorkout(){
  for(const k in prevFilled){if(apply.some(f=>f.k==k))continue;if(JSON.stringify(setsOf(s,k))===JSON.stringify(prevFilled[k].sets))undoFill(s,k,prevFilled[k])}
  apply.forEach(f=>{const pf=prevFilled[f.k],prior=pf?pf.tick:!!s.ticks[f.k],psets=pf?pf.prior:(s.sets[f.k]?s.sets[f.k]:null),pdate=pf?pf.pdate:(s.dates[f.k]||null);
   s.sets[f.k]=f.sets;s.ticks[f.k]=true;s.dates[f.k]=w.date;w.filled[f.k]={sets:f.sets,tick:prior,prior:psets,pdate};f.e.pk=f.k});
+ // 2.4 km tests from this workout feed the run stats
+ s.runs=(s.runs||[]).filter(r=>r.src!=w.id);w.cardio.forEach((c,i)=>{if(c.test){const t=(c.min||0)*60+(c.sec||0);if(t>=300&&t<=3600)s.runs.push({id:"r"+w.id+i,src:w.id,date:w.date,secs:t})}});
  if(old)s.custom[s.custom.indexOf(old)]=w;else s.custom.push(w);
  delete s.draft;save(s);D=null;
  logMsg=`Saved ✓`+(w.link?(apply.length?` Filled and ticked ${apply.length} exercise${apply.length>1?"s":""} in ${plan[w.link.di][0].split(" · ")[0]} (Week ${w.w}).`:` No exercises matched ${plan[w.link.di][0].split(" · ")[0]}.`)+(conf.length&&!overwrite?` Kept your existing sets for ${conf.length}.`:""):" Counted as an extra session.");
@@ -808,11 +896,11 @@ function deleteWorkout(){if(!D||!D.id)return;
  if(!confirm("Delete this workout? Anything it filled into your plan will be undone."))return;
  const s=st(),w=(s.custom||[]).find(x=>x.id==D.id);
  if(w){for(const k in (w.filled||{})){if(JSON.stringify(setsOf(s,k))===JSON.stringify(w.filled[k].sets))undoFill(s,k,w.filled[k])}
-  s.custom=s.custom.filter(x=>x.id!=D.id)}
+  s.custom=s.custom.filter(x=>x.id!=D.id);s.runs=(s.runs||[]).filter(r=>r.src!=D.id)}
  delete s.draft;save(s);D=null;logMsg="Workout deleted.";renderLog();window.scrollTo(0,0)}
 function openWorkout(id){const s=st(),w=(s.custom||[]).find(x=>x.id==id);if(!w)return;
  D={id:w.id,date:w.date,name:w.name||"",dur:w.dur??"",notes:w.notes||"",link:w.link?String(w.link.di):"extra",lb:w.b,lw:w.w,
-  ex:w.ex.map(e=>({name:e.name,kind:e.kind,sets:e.sets.map(a=>[a[0]??"",a[1]??""])})),cardio:(w.cardio||[]).map(c=>({type:c.type,min:c.min??"",dist:c.dist??""}))};
+  ex:w.ex.map(e=>({name:e.name,kind:e.kind,sets:e.sets.map(a=>[a[0]??"",a[1]??""])})),cardio:(w.cardio||[]).map(c=>({type:c.type,min:c.min??"",dist:c.dist??"",test:!!c.test,sec:c.sec??""}))};
  logMsg="";saveDraft();renderLog();window.scrollTo(0,0)}
 (function(){const el=document.getElementById("logBody");
  el.addEventListener("click",ev=>{const b=ev.target.closest("[data-act]");if(!b||b.disabled)return;const a=b.dataset.act,xi=+b.dataset.x;
@@ -842,7 +930,8 @@ function openWorkout(id){const s=st(),w=(s.custom||[]).find(x=>x.id==id);if(!w)r
   if(t.dataset.d=="date")D.dateTouched=true;
   if(t.dataset.d){D[t.dataset.d]=t.value;saveDraft();if(t.dataset.d=="link"&&ev.type=="change")renderLog();return}
   if(t.dataset.x!=null&&t.dataset.f!=null){D.ex[+t.dataset.x].sets[+t.dataset.i][+t.dataset.f]=t.value;saveDraft();return}
-  if(t.dataset.c!=null&&t.dataset.cf){D.cardio[+t.dataset.c][t.dataset.cf]=t.value;saveDraft()}};
+  if(t.dataset.c!=null&&t.dataset.cf){const c=D.cardio[+t.dataset.c];if(t.dataset.cf=="test"){if(ev.type!="change")return;c.test=t.checked;if(c.test)c.dist="2.4";saveDraft();renderLog();return}
+   c[t.dataset.cf]=t.value;saveDraft();if(t.dataset.cf=="type"&&ev.type=="change")renderLog()}};
  el.addEventListener("input",onField);el.addEventListener("change",onField);
  el.addEventListener("keydown",ev=>{const t=ev.target;if(ev.key=="Enter"&&t.classList.contains("num")){ev.preventDefault();const all=[...el.querySelectorAll("input.num")];const n=all[all.indexOf(t)+1];if(n)n.focus();else t.blur()}});
  document.addEventListener("click",ev=>{const sb=document.getElementById("sugg");if(sb&&!ev.target.closest(".addex"))sb.classList.remove("on")});
