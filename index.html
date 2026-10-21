@@ -132,6 +132,39 @@ label.btn{cursor:pointer}.btn.scanbtn{background:#383c47;font-size:16px}
 #scanOv.on{display:flex}#scanOv .sbox{background:var(--card);border-radius:18px;padding:24px 20px;width:100%;max-width:380px;text-align:center}
 #scanOv .big{font-size:42px}#scanOv b{font-size:18px;display:block;margin:6px 0}#scanOv .bar{height:10px;margin:14px 0 6px}
 #scanOv .bar i{transition:width .25s}
+/* game */
+.pcard{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#2c303a,#262a33);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:0 0 12px;cursor:pointer}
+.pcard.big{cursor:default;padding:16px;margin-top:4px}
+.lvl{flex:none;width:54px;height:54px;border-radius:50%;border:3px solid var(--rk);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 0 14px -4px var(--rk)}
+.pcard.big .lvl{width:64px;height:64px}.lvl span{font-size:9px;font-weight:800;color:var(--mut);letter-spacing:.08em}.lvl b{font-size:22px;margin-top:2px}.pcard.big .lvl b{font-size:26px}
+.pcm{flex:1;min-width:0}.pct{display:flex;justify-content:space-between;align-items:center}.rk{color:var(--rk);font-size:16px;letter-spacing:.02em}
+.flm{font-size:13px;font-weight:700;color:#ffb454;background:rgba(255,180,84,.12);padding:3px 8px;border-radius:10px}
+.xpbar{height:9px;background:#1d2027;border-radius:6px;margin:8px 0 5px;overflow:hidden}.xpbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#2fbf8b,var(--acc));box-shadow:0 0 10px rgba(78,240,180,.45);transition:width .6s}
+.pcs{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);font-weight:600}
+.pcard.pulse{animation:pls .7s ease}@keyframes pls{0%{transform:scale(1)}35%{transform:scale(1.03);box-shadow:0 0 0 3px rgba(78,240,180,.45)}100%{transform:scale(1)}}
+.stats{padding:14px 16px}.sbar+.sbar{margin-top:14px}.sbt{display:flex;justify-content:space-between;font-size:14.5px;font-weight:600}.sbt b{color:var(--acc)}
+.stats .bar{height:8px;margin-top:6px}.sbd{font-size:12px;color:var(--mut);margin-top:4px}
+details.fit,details.xpd{background:var(--card);border-radius:14px;margin-top:10px}
+details.fit summary,details.xpd summary{font-size:15px;padding:14px 16px}.fs{color:var(--mut);font-weight:600;font-size:13px}
+details.fit>:not(summary),details.xpd>:not(summary){margin-left:14px;margin-right:14px}
+.fitrow{display:grid;grid-template-columns:1fr 130px;gap:8px;align-items:center;margin-bottom:8px}.fitrow.run{grid-template-columns:1fr 1fr 130px}.fitrow .btn{margin:0;padding:13px 6px;font-size:14px}
+.fitlist div{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;color:#c9ccd3;border-top:1px solid var(--line)}.fitlist .rm{height:38px}
+details.xpd>div:not(.info){display:flex;justify-content:space-between;font-size:14px;padding:7px 0;border-top:1px solid var(--line)}details.xpd b{color:var(--acc)}
+details.fit .info,details.xpd .info{padding-bottom:12px}
+.bhead{font-size:13px;color:var(--mut);font-weight:600;margin:-4px 0 8px}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.badge{background:var(--card);border-radius:14px;padding:12px 8px;text-align:center;border:1px solid transparent}
+.badge .bi{font-size:30px;filter:grayscale(1);opacity:.35}.badge .bn{font-size:12.5px;font-weight:700;margin-top:4px;color:var(--mut)}.badge .br{font-size:11px;color:#6c7280;margin-top:3px;line-height:1.3}.badge .br span{color:var(--mut)}
+.badge.on{border-color:rgba(78,240,180,.45);background:linear-gradient(180deg,rgba(78,240,180,.1),var(--card))}.badge.on .bi{filter:none;opacity:1}.badge.on .bn{color:var(--txt)}.badge.on .br{color:var(--acc);font-weight:700}
+#gtoast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 12px);transform:translate(-50%,-140%);z-index:60;background:#1d2027;border:1px solid var(--acc);color:var(--txt);border-radius:14px;padding:12px 16px;font-size:14.5px;box-shadow:0 10px 30px rgba(0,0,0,.45);max-width:calc(100% - 32px);width:max-content;transition:transform .35s cubic-bezier(.2,1.2,.4,1);pointer-events:none}
+#gtoast.on{transform:translate(-50%,0)}#gtoast .tx{color:var(--acc);font-weight:800;margin-left:4px}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:59;overflow:hidden}
+#confetti i{position:absolute;top:-16px;border-radius:2px;animation:cf 1.6s cubic-bezier(.25,.6,.4,1) forwards}
+@keyframes cf{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),105vh) rotate(var(--r));opacity:.9}}
+@media (prefers-reduced-motion:reduce){.pcard.pulse,#confetti i{animation:none}.xpbar i{transition:none}}
+.guide{background:var(--card);border-radius:14px;overflow:hidden}
+.gi{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-top:1px solid var(--line);font-size:13.5px;color:var(--mut);line-height:1.4}
+.gi:first-child{border-top:0}.gi b{color:var(--txt);font-size:14.5px}.gic{font-size:20px;flex:none;width:26px;text-align:center}.gi>div:nth-child(2){flex:1}.gch{color:var(--acc);font-size:22px;align-self:center}
 </style></head><body>
 
 <!-- WORKOUTS -->
@@ -139,6 +172,7 @@ label.btn{cursor:pointer}.btn.scanbtn{background:#383c47;font-size:16px}
 <div class="hdr"><div><h1>Phase 3 · Chest &amp; Arms Focus</h1></div>
 <a class="mbtn" id="quickMusic" href="#" target="_blank" rel="noopener" aria-label="Open Spotify"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.6 14.4a.6.6 0 01-.9.2c-2.4-1.5-5.4-1.8-9-1a.6.6 0 11-.3-1.2c3.9-.9 7.2-.5 9.9 1.1.3.2.4.6.3.9zm1.2-2.7a.8.8 0 01-1.1.3c-2.7-1.7-6.9-2.2-10.2-1.2a.8.8 0 11-.4-1.5c3.7-1.1 8.4-.6 11.5 1.4.3.2.4.7.2 1zm.1-2.8C14.7 9 9.3 8.8 6.2 9.7a.9.9 0 11-.5-1.8c3.6-1.1 9.5-.9 13.2 1.3a.9.9 0 01-1 1.7z"/></svg>Music</a></div>
 <div class="sub" id="blk"></div>
+<div data-pcard="small"></div>
 <div class="weeks" id="weeks"></div>
 <div class="wkinfo" id="wkinfo"></div>
 <div id="days"></div>
@@ -157,6 +191,8 @@ Weeks 1–3 keep the weight and add reps. Week 4 bumps the weight and drops back
 <!-- PROGRESS -->
 <section class="panel" id="p-progress">
 <h1>Progress</h1><div class="sub" id="psub"></div>
+<div data-pcard="big"></div>
+<div id="gstats"></div>
 <div class="cards" id="cards"></div>
 <div id="pempty"></div>
 <h2>Exercise chart</h2>
@@ -166,6 +202,8 @@ Weeks 1–3 keep the weight and add reps. Week 4 bumps the weight and drops back
 <div class="ov" id="ov"></div>
 <h2>Personal bests</h2>
 <div id="pbs"></div>
+<h2>Badges</h2>
+<div id="badges"></div>
 </section>
 
 <!-- MUSIC -->
@@ -185,6 +223,7 @@ Weeks 1–3 keep the weight and add reps. Week 4 bumps the weight and drops back
 <input type="file" id="scanCam" class="vh" accept="image/*" capture="environment" multiple aria-label="Take a photo of a workout">
 <input type="file" id="scanPick" class="vh" accept="image/*" multiple aria-label="Choose workout photos">
 <div id="scanOv" role="dialog" aria-modal="true" aria-live="polite"><div class="sbox"><div class="big">📷</div><b id="scanTitle">Reading your workout…</b><div id="scanStatus" class="info"></div><div class="bar"><i id="scanBar"></i></div><div class="info">Everything happens on your phone. Nothing is uploaded.</div><button class="btn" id="scanCancel">Cancel</button></div></div>
+<div id="gtoast" role="status" aria-live="polite"></div><div id="confetti" aria-hidden="true"></div>
 <nav class="tabbar"><div class="in">
 <button data-tab="workouts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>Workouts</button>
 <button data-tab="log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v9M7.5 12h9"/></svg>Log</button>
@@ -243,6 +282,8 @@ function migrate(s){
   s.v=2;}
  if(s.v<3){s.custom=Array.isArray(s.custom)?s.custom:[];s.v=3} // v3: workouts logged on the Log tab
  s.custom=Array.isArray(s.custom)?s.custom:[];
+ if(s.v<4){s.body=[];s.runs=[];s.v=4} // v4: bodyweight + 2.4 km runs for game stats
+ s.body=Array.isArray(s.body)?s.body:[];s.runs=Array.isArray(s.runs)?s.runs:[];
  return s;}
 function st(){let s;try{s=JSON.parse(localStorage.getItem(K))}catch(e){s=null}return migrate(s)}
 function save(s){localStorage.setItem(K,JSON.stringify(s))}
@@ -347,7 +388,7 @@ function render(){
  const nb=document.getElementById("nextWeek");
  nb.textContent=wk<6?`Continue to Week ${wk+1} →`:`Start Block ${b+1} (weights go up) →`;
  nb.onclick=()=>{const s2=st();if(s2.week<6)s2.week++;else{s2.block++;s2.week=1}save(s2);window.scrollTo(0,0);render()};
- setMusicLinks(s);
+ setMusicLinks(s);checkGame();
 }
 function saveSet(inp){
  const s=st(),k=inp.dataset.k,i=+inp.dataset.i,f=+inp.dataset.f;const v=inp.value.trim().replace(",",".");
@@ -362,7 +403,7 @@ function saveSet(inp){
  if(arr.filter(a=>a[1]!=null).length>=t.sets)s.ticks[k]=true;
  save(s);refreshRow(k);
 }
-function refreshRow(k){ // update tick + day summary without re-rendering (keeps keyboard focus)
+function refreshRow(k){setTimeout(checkGame,0); // update tick + day summary without re-rendering (keeps keyboard focus)
  const s=st(),row=document.querySelector(`[data-row="${k}"]`);if(!row)return;
  row.classList.toggle("ticked",!!s.ticks[k]);row.querySelector("input[type=checkbox]").checked=!!s.ticks[k];
  const p=kparse(k),d=row.closest("details"),ex=plan[p.di][1];
@@ -396,8 +437,11 @@ function stats(s){
  return{workouts,planDone,extra,streak,thisV,lastV,pct:Math.round(dn/tot*100),dn,tot,anyLog,maxB}}
 function exFromVal(s,v){if(String(v).startsWith("c:")){const n=v.slice(2);return customExList(s).find(x=>norm(x.name)==n)||null}
  const [di,ei]=String(v).split("-").map(Number);return exAt(di,ei)||null}
-function renderProgress(){
- const s=st(),S=stats(s);
+function renderProgress(keepOpen){
+ const s=st(),S=stats(s),G=checkGame();
+ const fitOpen=keepOpen||!!document.querySelector("details.fit[open]");
+ document.getElementById("gstats").innerHTML=`<h2>Your stats</h2>`+statBars(G)+fitnessHTML(s,G)+xpBreakdown(G)+`<h2>Guidance</h2>`+guidanceHTML(s,G);if(fitOpen)document.querySelector("details.fit").open=true;bindFitness();
+ document.getElementById("badges").innerHTML=badgesHTML(G);
  document.getElementById("psub").textContent=`Block ${s.block} · Week ${s.week} (${WEEKS[s.week-1]})`;
  const diff=S.thisV-S.lastV,dp=S.lastV?Math.round(diff/S.lastV*100):null;
  document.getElementById("cards").innerHTML=
@@ -479,6 +523,7 @@ function renderPBs(s){
    rows.push(`<div class="pb"><div><div class="nm">${esc(x.name)}${tag}</div><div class="meta">Heaviest ${fmt(hv.best[0])} kg × ${hv.best[1]} · ${where(hv)}</div></div><div class="r"><b>${fmt(he.e1)} kg</b><div class="meta">est. 1RM · ${he.custom?"Log":`B${he.b} W${he.w}`}</div></div></div>`)}
   else{let m=h[0];h.forEach(a=>{if(a.maxR>m.maxR)m=a});const u=x.kind=="s"?" s":x.kind=="m"?" min":" reps";
    rows.push(`<div class="pb"><div><div class="nm">${esc(x.name)}${tag}</div><div class="meta">${where(m)}</div></div><div class="r"><b>${m.maxR}${u}</b><div class="meta">best set</div></div></div>`)}});
+ const rs=(s.runs||[]);if(rs.length){const b=rs.reduce((a,c)=>c.secs<a.secs?c:a);rows.unshift(`<div class="pb"><div><div class="nm">2.4 km run</div><div class="meta">${niceDate(b.date)}</div></div><div class="r"><b>${fmtTime(b.secs)}</b><div class="meta">fastest</div></div></div>`)}
  document.getElementById("pbs").innerHTML=rows.length?`<div class="pbs">${rows.join("")}</div>`:`<div class="empty" style="margin-top:0">🏆 Your personal bests will show here once you log some sets.</div>`;
 }
 
@@ -501,6 +546,138 @@ document.getElementById("lnkSave").onclick=()=>{const p=parseSpotify(document.ge
  const s=st();s.music=p;save(s);e.className="err ok";e.textContent=`Saved ✓ ${p.type} loaded`;document.getElementById("lnk").value="";renderMusic()};
 document.getElementById("lnkDef").onclick=()=>{const s=st();s.music=null;save(s);const e=document.getElementById("lnkErr");e.className="err ok";e.textContent="Back to Beast Mode ✓";renderMusic()};
 window.addEventListener("online",()=>{if(st().tab=="music"){embedKey="";renderMusic()}});
+
+/* ---------- GAME: XP, levels, badges, stat bars (all computed from existing data, so it's retroactive) ---------- */
+const RANKS=[[1,"Rookie","#9aa0ab"],[4,"Iron","#b8bec9"],[8,"Bronze","#d08a55"],[13,"Silver","#d6dde6"],[18,"Gold","#f5c84c"],[24,"Platinum","#7fe0d6"],[30,"Diamond","#8ab8ff"],[40,"Elite","#4ef0b4"]];
+const XPR={set:10,day:50,week:100,block:250,pr:100,workout:25};
+const needFor=L=>200+80*(L-1); // XP from level L to L+1: gently rising
+function levelOf(xp){let L=1,left=xp;while(left>=needFor(L)){left-=needFor(L);L++}return{level:L,into:left,need:needFor(L)}}
+function rankOf(L){let r=RANKS[0];RANKS.forEach(x=>{if(L>=x[0])r=x});return{name:r[1],color:r[2],next:RANKS.find(x=>x[0]>L)}}
+const fmtTime=s=>`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
+const latestBW=s=>{const b=(s.body||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));return b.length?b[b.length-1].kg:null};
+// heaviest set + best e1RM across plan and Log-tab exercises whose name matches
+function liftBest(s,test){let kg=0,e1=0,at=null;[...EX,...customExList(s)].filter(x=>test(norm(x.name))).forEach(x=>history(s,x).forEach(h=>{if(h.best&&h.best[0]>kg){kg=h.best[0];at=h}if(h.e1>e1)e1=h.e1}));return{kg,e1,at}}
+const isBench=n=>/bench/.test(n)&&!/incline|decline|dumbbell|\bdb\b/.test(n);
+const isDead=n=>/deadlift/.test(n)&&!/romanian|rdl|stiff/.test(n);
+function game(s){
+ // plan days / weeks / blocks
+ let maxB=s.block;Object.keys(s.sets).concat(Object.keys(s.ticks)).forEach(k=>maxB=Math.max(maxB,kparse(k).b));
+ let days=0,weeks=0,blocks=0,deload=false,perfect=0;const active={};
+ for(let b=1;b<=maxB;b++){let wkDone=0;for(let w=1;w<=6;w++){let dDone=0;plan.forEach((d,di)=>{const ks=dayKeys(b,w,di);if(ks.every(k=>s.ticks[k]))dDone++;if(ks.some(k=>s.ticks[k]||setsOf(s,k).length))active[kidx(b,w)]=1});
+  days+=dDone;if(dDone==plan.length){weeks++;wkDone++;if(w==6)deload=true}}if(wkDone==6)blocks++}
+ (s.custom||[]).forEach(w=>active[kidx(w.b,w.w)]=1);
+ // sets
+ let sets=0;for(const k in s.sets)sets+=setsOf(s,k).length;customEntries(s).forEach(c=>sets+=c.sets.length);(s.custom||[]).forEach(w=>sets+=(w.cardio||[]).length);
+ const workouts=(s.custom||[]).length;
+ // PR events: each time an exercise beats its previous best (first log is the baseline)
+ const prs=[];[...EX,...customExList(s)].forEach(x=>{let best=null;history(s,x).forEach(h=>{const v=x.kind=="w"?(h.best?h.best[0]:0):h.maxR; // lift PR = new heaviest weight; bodyweight/timed = more reps/timeif(!v)return;
+  if(best!=null&&v>best+1e-9)prs.push({name:x.name,idx:h.idx,date:h.date||"",txt:x.kind=="w"&&h.best?`${fmt(h.best[0])} kg × ${h.best[1]}`:`${h.maxR}${x.kind=="s"?" s":x.kind=="m"?" min":" reps"}`});
+  best=best==null?v:Math.max(best,v)})});
+ const runs=(s.runs||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));let rb=null;
+ runs.forEach(r=>{if(rb!=null&&r.secs<rb)prs.push({name:"2.4 km run",idx:9999,date:r.date,txt:fmtTime(r.secs)});rb=rb==null?r.secs:Math.min(rb,r.secs)});
+ // streaks (program weeks)
+ const idxs=Object.keys(active).map(Number),top=Math.max(kidx(s.block,s.week),...idxs,0);let run=0,bestStreak=0,streakXP=0;
+ for(let i=0;i<=top;i++){if(active[i]){run++;bestStreak=Math.max(bestStreak,run);streakXP+=15*Math.min(run-1,10)}else run=0}
+ const cur=kidx(s.block,s.week);let i=active[cur]?cur:cur-1,streak=0;while(i>=0&&active[i]){streak++;i--}
+ const br={sets:sets*XPR.set,days:days*XPR.day,weeks:weeks*XPR.week,blocks:blocks*XPR.block,prs:prs.length*XPR.pr,workouts:workouts*XPR.workout,streak:streakXP};
+ const xp=Object.values(br).reduce((a,b)=>a+b,0),lv=levelOf(xp),rank=rankOf(lv.level);
+ // stats
+ const bw=latestBW(s),bench=liftBest(s,isBench),dead=liftBest(s,isDead),bestRun=runs.length?Math.min(...runs.map(r=>r.secs)):null;
+ const totalWorkouts=days+(s.custom||[]).filter(w=>!(w.link&&dayKeys(w.link.b,w.link.w,w.link.di).every(k=>s.ticks[k]))).length;
+ let wkVol={};for(const k in s.sets){const p=kparse(k);setsOf(s,k).forEach(([kg,r])=>{if(kg)wkVol[p.idx]=(wkVol[p.idx]||0)+kg*r})}customEntries(s).forEach(c=>c.sets.forEach(([kg,r])=>{if(kg)wkVol[c.idx]=(wkVol[c.idx]||0)+kg*r}));
+ const maxVol=Math.max(0,...Object.values(wkVol));
+ const plankBest=history(s,EX.find(x=>x.name=="Plank")).reduce((m,h)=>Math.max(m,h.maxR),0);
+ const cl=v=>Math.max(0,Math.min(100,Math.round(v)));
+ const sb=bw&&bench.e1?cl(bench.e1/bw/2*100):null,sd=bw&&dead.e1?cl(dead.e1/bw/3*100):null;
+ const strength=sb!=null&&sd!=null?Math.round((sb+sd)/2):sb!=null?sb:sd;
+ const vo2=bestRun?483/(bestRun/60)+3.5:null,endurance=vo2!=null?cl((vo2-30)/30*100):null;
+ let tot=0,dn=0;for(let j=Math.max(0,cur-3);j<=cur;j++){const b=Math.floor(j/6)+1,w=j%6+1;plan.forEach((d,di)=>d[1].forEach((_,ei)=>{tot++;if(s.ticks[`${b}-${w}-${di}-${ei}`])dn++}))}
+ const completion=tot?dn/tot*100:0,consistency=cl(Math.min(streak/8,1)*50+completion/2);
+ const B=[
+  ["first","🏁","First workout","Finish your first workout",totalWorkouts>=1],
+  ["w5","💪","Five down","Finish 5 workouts",totalWorkouts>=5,`${Math.min(totalWorkouts,5)}/5`],
+  ["w25","🏋️","Regular","Finish 25 workouts",totalWorkouts>=25,`${Math.min(totalWorkouts,25)}/25`],
+  ["w100","👑","Centurion","Finish 100 workouts",totalWorkouts>=100,`${Math.min(totalWorkouts,100)}/100`],
+  ["perfect","✅","Perfect week","Tick every exercise in a week",weeks>=1],
+  ["streak4","🔥","On fire","Train 4 weeks in a row",bestStreak>=4,`best ${bestStreak}/4`],
+  ["deload","🧘","Recovered","Finish a lighter week (week 6)",deload],
+  ["block1","🧱","Block 1 done","Finish block 1 and start block 2",s.block>=2||blocks>=1],
+  ["pr1","⭐","First PR","Beat a previous best",prs.length>=1],
+  ["pr10","🌟","Record breaker","Set 10 PRs",prs.length>=10,`${Math.min(prs.length,10)}/10`],
+  ["bench100","💯","100 kg bench club","Bench press 100 kg",bench.kg>=100,bench.kg?`best ${fmt(bench.kg)} kg`:""],
+  ["bench15","🦍","1.5× bodyweight bench","Bench 1.5× your bodyweight",!!(bw&&bench.kg>=1.5*bw),bw?`need ${fmt(r1(1.5*bw))} kg`:"log your bodyweight"],
+  ["dl2","🐂","2× bodyweight deadlift","Deadlift 2× your bodyweight",!!(bw&&dead.kg>=2*bw),bw?`need ${fmt(r1(2*bw))} kg`:"log your bodyweight"],
+  ["run10","🏃","Sub-10 2.4 km","Run 2.4 km in under 10:00",bestRun!=null&&bestRun<600,bestRun?`best ${fmtTime(bestRun)}`:"log a 2.4 km run"],
+  ["ton10","🚛","Ten-tonne week","Lift 10,000 kg in one week",maxVol>=10000,`best ${Math.round(maxVol).toLocaleString("en-AU")} kg`],
+  ["plank","⏱️","Iron core","Hold a plank for 90 s",plankBest>=90,plankBest?`best ${plankBest} s`:""],
+  ["lvl10","🎖️","Level 10","Reach level 10",lv.level>=10,`level ${lv.level}`]
+ ].map(([id,icon,name,req,earned,prog])=>({id,icon,name,req,earned:!!earned,prog:prog||""}));
+ return{xp,br,...lv,rank,streak,bestStreak,prs,badges:B,bw,bench,dead,bestRun,vo2,strength,endurance,consistency,completion,sb,sd}}
+
+function playerCard(G,big){const pct=Math.round(G.into/G.need*100);
+ return `<div class="pcard ${big?"big":""}" ${big?"":'role="button" tabindex="0" onclick="showTab(\'progress\')"'} style="--rk:${G.rank.color}">
+  <div class="lvl"><span>LVL</span><b>${G.level}</b></div>
+  <div class="pcm"><div class="pct"><b class="rk">${G.rank.name}</b><span class="flm" title="Weekly streak">🔥 ${G.streak} wk</span></div>
+  <div class="xpbar"><i style="width:${pct}%"></i></div>
+  <div class="pcs"><span>${G.into.toLocaleString("en-AU")} / ${G.need.toLocaleString("en-AU")} XP</span><span>${G.rank.next?`${G.rank.next[1]} at Lv ${G.rank.next[0]}`:"Top rank"}</span></div></div></div>`}
+function statBars(G){const row=(ic,name,v,hint,det)=>`<div class="sbar"><div class="sbt"><span>${ic} ${name}</span><b>${v==null?"–":v}</b></div><div class="bar"><i style="width:${v||0}%"></i></div><div class="sbd">${v==null?hint:det}</div></div>`;
+ return `<div class="card stats">`+
+  row("💪","Strength",G.strength,"Log your bodyweight and a bench or deadlift",[G.bench.e1&&G.bw?`Bench ${fmt(r1(G.bench.e1/G.bw*100)/100)}× BW`:"",G.dead.e1&&G.bw?`Deadlift ${fmt(r1(G.dead.e1/G.bw*100)/100)}× BW`:""].filter(Boolean).join(" · ")+" (est. 1RM)")+
+  row("🫁","Endurance",G.endurance,"Log a 2.4 km run below",G.vo2?`2.4 km in ${fmtTime(G.bestRun)} · VO₂max ≈ ${Math.round(G.vo2)}`:"")+
+  row("📅","Consistency",G.consistency,"",`${G.streak}-week streak · ${Math.round(G.completion)}% of the last 4 weeks ticked`)+`</div>`}
+function badgesHTML(G){const n=G.badges.filter(b=>b.earned).length;
+ return `<div class="bhead">${n} / ${G.badges.length} earned</div><div class="badges">`+G.badges.map(b=>`<div class="badge ${b.earned?"on":""}"><div class="bi">${b.icon}</div><div class="bn">${esc(b.name)}</div><div class="br">${b.earned?"Earned":esc(b.req)+(b.prog?`<br><span>${esc(b.prog)}</span>`:"")}</div></div>`).join("")+`</div>`}
+function xpBreakdown(G){const L=[["Sets logged",G.br.sets],["Plan days done",G.br.days],["Full weeks",G.br.weeks],["Full blocks",G.br.blocks],["PRs",G.br.prs],["Logged workouts",G.br.workouts],["Streak bonus",G.br.streak]];
+ return `<details class="xpd"><summary>How you earned ${G.xp.toLocaleString("en-AU")} XP</summary>${L.map(([k,v])=>`<div><span>${k}</span><b>${v.toLocaleString("en-AU")}</b></div>`).join("")}<div class="info">+10 per set · +50 per plan day · +100 per full week · +250 per full block · +100 per PR · +25 per logged workout · streak bonus grows each week in a row.</div></details>`}
+function fitnessHTML(s,G){const body=(s.body||[]).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))),runs=(s.runs||[]).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ return `<details class="fit"><summary><span>⚖️ Bodyweight &amp; 🏃 2.4 km run</span><span class="fs">${G.bw?fmt(G.bw)+" kg":"–"} · ${G.bestRun?fmtTime(G.bestRun):"–"}</span></summary>
+ <div class="fitrow"><div class="unitwrap"><input class="num" id="bwIn" inputmode="decimal" placeholder="${G.bw||"kg"}" aria-label="Bodyweight kg"><span>kg</span></div><button class="btn pri" id="bwSave">Save weight</button></div>
+ <div class="fitrow run"><div class="unitwrap"><input class="num" id="runM" inputmode="numeric" pattern="[0-9]*" placeholder="10" aria-label="Minutes"><span>min</span></div><div class="unitwrap"><input class="num" id="runS" inputmode="numeric" pattern="[0-9]*" placeholder="30" aria-label="Seconds"><span>sec</span></div><button class="btn pri" id="runSave">Save run</button></div>
+ <div class="fitlist">${body.slice(0,4).map(b=>`<div><span>${niceDate(b.date)} · ${fmt(b.kg)} kg</span><button class="rm" data-fdel="body" data-id="${esc(b.id)}" aria-label="Delete">✕</button></div>`).join("")}${runs.slice(0,4).map(r=>`<div><span>${niceDate(r.date)} · 2.4 km in ${fmtTime(r.secs)}</span><button class="rm" data-fdel="runs" data-id="${esc(r.id)}" aria-label="Delete">✕</button></div>`).join("")}</div>
+ <div class="info">Bodyweight is used for the strength ratios and badges. The 2.4 km time gives an estimated VO₂max for Endurance.</div></details>`}
+function bindFitness(){const q=id=>document.getElementById(id);if(!q("bwSave"))return;
+ q("bwSave").onclick=()=>{const v=numOrNull(q("bwIn").value);if(!v||v<30||v>300){alert("Enter your bodyweight in kg.");return}const s=st();s.body=s.body||[];s.body.push({id:"b"+Date.now(),date:today(),kg:v});save(s);renderProgress(true)};
+ q("runSave").onclick=()=>{const m=numOrNull(q("runM").value)||0,sc=numOrNull(q("runS").value)||0,t=m*60+sc;if(t<300||t>3600){alert("Enter your 2.4 km time, e.g. 10 min 30 sec.");return}const s=st();s.runs=s.runs||[];s.runs.push({id:"r"+Date.now(),date:today(),secs:t});save(s);renderProgress(true)};
+ document.querySelectorAll("[data-fdel]").forEach(b=>b.onclick=()=>{if(!confirm("Delete this entry?"))return;const s=st();s[b.dataset.fdel]=(s[b.dataset.fdel]||[]).filter(x=>x.id!=b.dataset.id);save(s);renderProgress(true)})}
+
+// "Guidance": a few concrete next steps worked out from his data
+function guidanceHTML(s,G){const out=[],b=s.block,w=s.week;
+ const di=plan.findIndex((d,i)=>!dayKeys(b,w,i).every(k=>s.ticks[k]));
+ if(di>=0){const d=plan[di],e=d[1][0],t=target(e,w,b);out.push(["🎯",`Next up: <b>${esc(d[0])}</b>`,`Week ${w} (${WEEKS[w-1].toLowerCase()}). Starts with ${esc(e[0])} ${esc(t.txt)}.`,"workouts"])}
+ else out.push(["✅",`Week ${w} is done`,w<6?`Tap “Continue to Week ${w+1}” on Workouts when you're ready.`:`Block ${b} complete. Start Block ${b+1} and every weight goes up a step.`,"workouts"]);
+ if(w==6)out.push(["🧘","Lighter week","Fewer sets and a bit lighter on purpose. Leave 3+ reps in the tank and let your body catch up."]);
+ // stalled lifts: last two logged weeks both short of the target reps
+ EX.filter(x=>x.kind=="w").forEach(x=>{const h=history(s,x).filter(a=>!a.custom&&a.best).slice(-2);if(h.length<2)return;
+  const miss=h.every(a=>{const t=tnum(x.e,a.w,a.b);return Math.min(...a.sets.map(r=>r[1]))<t.reps});
+  if(miss&&out.length<5)out.push(["🔁",`${esc(x.name)}: stay put`,`You've been short of the target reps twice. Repeat ${fmt(h[1].best[0])} kg until you hit every rep, then move up.`])});
+ const lock=G.badges.filter(b=>!b.earned&&/\d+\/\d+/.test(b.prog)).map(b=>{const m=b.prog.match(/(\d+)\/(\d+)/);return{b,r:m[1]/m[2]}}).sort((a,b)=>b.r-a.r)[0];
+ if(lock)out.push([lock.b.icon,`Closest badge: ${esc(lock.b.name)}`,`${esc(lock.b.req)} (${esc(lock.b.prog)}).`]);
+ out.push(["⬆️",`${(G.need-G.into).toLocaleString("en-AU")} XP to level ${G.level+1}`,`About ${Math.ceil((G.need-G.into)/XPR.set)} logged sets, or finish a day (+${XPR.day}) and beat a PR (+${XPR.pr}).`]);
+ if(!G.bw)out.push(["⚖️","Add your bodyweight","Unlocks the Strength bar and the bodyweight badges. Open “Bodyweight & 2.4 km run” above."]);
+ else if(!G.bestRun)out.push(["🏃","Do a 2.4 km time trial","Log the time above to unlock the Endurance bar."]);
+ return `<div class="guide">`+out.slice(0,5).map(([i,t,d,tab])=>`<div class="gi" ${tab?`role="button" onclick="showTab('${tab}')"`:""}><div class="gic">${i}</div><div><b>${t}</b><div>${d}</div></div>${tab?'<span class="gch">›</span>':""}</div>`).join("")+`</div>`}
+
+/* celebrations: toast + CSS confetti + light haptics, only for things that are new since last time */
+let toastQ=[],toastBusy=false;
+function celebrate(msg,big){toastQ.push([msg,big]);if(!toastBusy)nextToast()}
+function nextToast(){const it=toastQ.shift();if(!it){toastBusy=false;return}toastBusy=true;const [msg,big]=it;
+ const t=document.getElementById("gtoast");t.innerHTML=msg;t.classList.remove("on");void t.offsetWidth;t.classList.add("on");
+ try{navigator.vibrate&&navigator.vibrate(big?[20,60,20]:15)}catch(e){}
+ if(big&&!matchMedia("(prefers-reduced-motion: reduce)").matches){const c=document.getElementById("confetti");c.innerHTML="";
+  const cols=["#4ef0b4","#ffd166","#8ab8ff","#ff7b9c","#f2f3f5"];
+  for(let i=0;i<36;i++){const p=document.createElement("i");p.style.cssText=`left:${Math.random()*100}%;background:${cols[i%cols.length]};animation-delay:${Math.random()*.25}s;--dx:${(Math.random()*2-1)*80}px;--r:${Math.random()*720-360}deg;width:${6+Math.random()*5}px;height:${8+Math.random()*8}px`;c.appendChild(p)}
+  setTimeout(()=>c.innerHTML="",2000)}
+ document.querySelectorAll(".pcard").forEach(p=>{p.classList.remove("pulse");void p.offsetWidth;p.classList.add("pulse")});
+ setTimeout(()=>{t.classList.remove("on");setTimeout(nextToast,350)},2600)}
+function checkGame(){const s=st(),G=game(s),prev=s.game;
+ const now={level:G.level,badges:G.badges.filter(b=>b.earned).map(b=>b.id),prs:G.prs.length};
+ if(prev){ // first run just records a baseline so past progress doesn't fire a pile of celebrations
+  if(now.prs>prev.prs){const last=G.prs.slice().sort((a,b)=>(a.idx-b.idx)||String(a.date).localeCompare(String(b.date))).pop();celebrate(`🏆 <b>New PR!</b> ${esc(last.name)} · ${esc(last.txt)} <span class="tx">+${XPR.pr} XP</span>`,true)}
+  now.badges.filter(id=>!prev.badges.includes(id)).forEach(id=>{const b=G.badges.find(x=>x.id==id);celebrate(`${b.icon} <b>Badge unlocked:</b> ${esc(b.name)}`,true)});
+  if(now.level>prev.level)celebrate(`⬆️ <b>Level ${G.level}!</b> ${G.rank.name}${rankOf(prev.level).name!=G.rank.name?" rank reached":""}`,true)}
+ if(!prev||JSON.stringify(prev)!==JSON.stringify(now)){s.game=now;save(s)}
+ document.querySelectorAll("[data-pcard]").forEach(el=>el.innerHTML=playerCard(G,el.dataset.pcard=="big"));
+ return G}
 
 /* ---------- LOG (his own workouts) ---------- */
 let D=null,logMsg="";
@@ -626,7 +803,7 @@ function saveWorkout(){
  if(old)s.custom[s.custom.indexOf(old)]=w;else s.custom.push(w);
  delete s.draft;save(s);D=null;
  logMsg=`Saved ✓`+(w.link?(apply.length?` Filled and ticked ${apply.length} exercise${apply.length>1?"s":""} in ${plan[w.link.di][0].split(" · ")[0]} (Week ${w.w}).`:` No exercises matched ${plan[w.link.di][0].split(" · ")[0]}.`)+(conf.length&&!overwrite?` Kept your existing sets for ${conf.length}.`:""):" Counted as an extra session.");
- renderLog();window.scrollTo(0,0)}
+ renderLog();window.scrollTo(0,0);checkGame()}
 function deleteWorkout(){if(!D||!D.id)return;
  if(!confirm("Delete this workout? Anything it filled into your plan will be undone."))return;
  const s=st(),w=(s.custom||[]).find(x=>x.id==D.id);
